@@ -175,8 +175,8 @@ export default function PlayoffManagementPage() {
           awayTeamId: '',
           homeTeamName: 'TBD',
           awayTeamName: 'TBD',
-          homeScore: null,
-          awayScore: null,
+          homeScore: undefined,
+          awayScore: undefined,
           isCompleted: false
         };
         

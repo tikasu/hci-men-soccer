@@ -267,7 +267,11 @@ export default function SchedulePage() {
                       <Link 
                         key={match.id} 
                         href={`/schedule/${match.id}`}
-                        className="block bg-white shadow-md hover:shadow-lg rounded-lg overflow-hidden border-l-4 border-blue-500"
+                        className={`block bg-white shadow-md hover:shadow-lg rounded-lg overflow-hidden border-l-4 ${
+                          match.isCompleted && match.homeScore !== undefined && match.awayScore !== undefined 
+                            ? 'border-blue-500' 
+                            : 'border-yellow-500'
+                        }`}
                       >
                         <div className="p-4">
                           <div className="flex justify-between items-center mb-3">
@@ -287,11 +291,31 @@ export default function SchedulePage() {
                                 </span>
                               </div>
                               <div className="flex items-center justify-center sm:w-[16%] my-1 sm:my-0">
-                                <div className="flex items-center space-x-2">
-                                  <span className="font-bold text-base sm:text-lg">{match.homeScore ?? 0}</span>
-                                  <span className="text-gray-600 mx-1">-</span>
-                                  <span className="font-bold text-base sm:text-lg">{match.awayScore ?? 0}</span>
-                                </div>
+                                {match.isCompleted && match.homeScore !== undefined && match.awayScore !== undefined ? (
+                                  <div className="flex items-center space-x-2">
+                                    <span className={`font-bold text-base sm:text-lg ${
+                                      match.homeScore > match.awayScore 
+                                        ? 'text-green-600' 
+                                        : match.homeScore < match.awayScore 
+                                          ? 'text-red-600' 
+                                          : 'text-gray-800'
+                                    }`}>
+                                      {match.homeScore}
+                                    </span>
+                                    <span className="text-gray-600 mx-1">-</span>
+                                    <span className={`font-bold text-base sm:text-lg ${
+                                      match.awayScore > match.homeScore 
+                                        ? 'text-green-600' 
+                                        : match.awayScore < match.homeScore 
+                                          ? 'text-red-600' 
+                                          : 'text-gray-800'
+                                    }`}>
+                                      {match.awayScore}
+                                    </span>
+                                  </div>
+                                ) : (
+                                  <span className="text-gray-500 font-medium">-</span>
+                                )}
                               </div>
                               <div className="text-center sm:text-left sm:w-[42%]">
                                 <span className="font-bold text-base sm:text-lg text-green-800">

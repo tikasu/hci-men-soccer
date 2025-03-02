@@ -248,15 +248,15 @@ export default function StandingsPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-white p-4 rounded shadow-sm">
             <h3 className="font-medium text-green-700 mb-2">Points System</h3>
-            <ul className="list-disc pl-5">
-              <li>Win: 3 points</li>
-              <li>Draw: 1 point</li>
-              <li>Loss: 0 points</li>
+            <ul className="list-disc pl-5 text-gray-700">
+              <li className="mb-1">Win: 3 points</li>
+              <li className="mb-1">Draw: 1 point</li>
+              <li className="mb-1">Loss: 0 points</li>
             </ul>
           </div>
           <div className="bg-white p-4 rounded shadow-sm">
             <h3 className="font-medium text-green-700 mb-2">Key</h3>
-            <ul className="space-y-1">
+            <ul className="space-y-1 text-gray-700">
               <li><span className="font-medium">GF</span>: Goals For</li>
               <li><span className="font-medium">GA</span>: Goals Against</li>
               <li><span className="font-medium">GD</span>: Goal Difference</li>
@@ -264,7 +264,7 @@ export default function StandingsPage() {
           </div>
           <div className="bg-white p-4 rounded shadow-sm">
             <h3 className="font-medium text-green-700 mb-2">Top Teams</h3>
-            <p className="text-gray-600">
+            <p className="text-gray-700">
               The top 8 teams (highlighted in green) qualify for the championship playoffs at the end of the season.
             </p>
           </div>

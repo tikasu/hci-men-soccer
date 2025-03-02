@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="100" viewBox="0 0 300 100">
+  <!-- Hexagon shape -->
+  <polygon points="40,15 65,15 80,40 65,65 40,65 25,40" fill="black" />
+  <polygon points="40,20 62,20 74,40 62,60 40,60 28,40" fill="white" />
+  
+  <!-- H letter -->
+  <path d="M40,30 L40,50 L60,50 L60,30" stroke="black" stroke-width="3" />
+  <path d="M40,50 L40,55 M60,50 L60,55" stroke="black" stroke-width="3" />
+  
+  <!-- Text -->
+  <text x="90" y="35" font-family="Arial" font-size="14" font-weight="bold">HCI</text>
+  <text x="90" y="50" font-family="Arial" font-size="10">SPORTS &amp;</text>
+  <text x="90" y="65" font-family="Arial" font-size="10">FITNESS</text>
+</svg> 

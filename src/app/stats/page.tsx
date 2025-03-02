@@ -55,6 +55,36 @@ export default function StatsPage() {
     }
   };
 
+  // First, create a ranking map based on the active category
+  const getPlayerRankings = () => {
+    const rankMap = new Map<string, number>();
+    
+    // Sort players by the active stat category (descending)
+    const statSortedPlayers = [...(allPlayers || [])].sort((a, b) => 
+      b.stats[activeCategory] - a.stats[activeCategory]
+    );
+    
+    // Assign ranks (handling ties)
+    let currentRank = 1;
+    let previousScore = -1;
+    
+    statSortedPlayers.forEach((player, index) => {
+      const score = player.stats[activeCategory];
+      
+      // If this score is different from the previous one, update the rank
+      if (score !== previousScore && index > 0) {
+        currentRank = index + 1;
+      }
+      
+      rankMap.set(player.id, currentRank);
+      previousScore = score;
+    });
+    
+    return rankMap;
+  };
+
+  const playerRankings = getPlayerRankings();
+
   const sortedPlayers = [...(allPlayers || [])].sort((a, b) => {
     const multiplier = sortDirection === 'asc' ? 1 : -1;
     
@@ -167,12 +197,13 @@ export default function StatsPage() {
             </thead>
             <tbody className="text-gray-600 text-xs sm:text-sm">
               {sortedPlayers.length > 0 ? (
-                sortedPlayers.map((player, index) => {
+                sortedPlayers.map((player) => {
                   const team = teams?.find(t => t.id === player.teamId);
+                  const playerRank = playerRankings.get(player.id) || 0;
                   
                   return (
                     <tr key={player.id} className="border-b border-gray-200 hover:bg-gray-50">
-                      <td className="py-2 sm:py-3 px-3 sm:px-6 text-left">{index + 1}</td>
+                      <td className="py-2 sm:py-3 px-3 sm:px-6 text-left">{playerRank}</td>
                       <td className="py-2 sm:py-3 px-3 sm:px-6 text-left font-medium">{player.name}</td>
                       <td className="py-2 sm:py-3 px-3 sm:px-6 text-left">
                         <Link href={`/teams/${player.teamId}`} className="hover:text-green-700">

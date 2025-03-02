@@ -87,15 +87,15 @@ export default function MatchDetailPage({ params }: { params: Promise<{ id: stri
 
         <div className="flex flex-col md:flex-row justify-between items-center mb-6">
           <div className="text-center md:text-left mb-4 md:mb-0">
-            <Link href={`/teams/${match.team1Id}`} className="text-xl font-bold hover:text-green-700">
-              {match.team1Name}
+            <Link href={`/teams/${match.homeTeamId}`} className="text-xl font-bold hover:text-green-700">
+              {match.homeTeamName}
             </Link>
           </div>
           
           <div className="text-center mb-4 md:mb-0">
-            {match.completed ? (
+            {match.isCompleted ? (
               <div className="text-3xl font-bold">
-                {match.score1} - {match.score2}
+                {match.homeScore} - {match.awayScore}
               </div>
             ) : (
               <div className="text-xl font-semibold px-4 py-2 bg-gray-100 rounded-lg">
@@ -103,18 +103,18 @@ export default function MatchDetailPage({ params }: { params: Promise<{ id: stri
               </div>
             )}
             <div className="text-sm text-gray-500 mt-1">
-              {match.completed ? 'Final Score' : 'Upcoming Match'}
+              {match.isCompleted ? 'Final Score' : 'Upcoming Match'}
             </div>
           </div>
           
           <div className="text-center md:text-right">
-            <Link href={`/teams/${match.team2Id}`} className="text-xl font-bold hover:text-green-700">
-              {match.team2Name}
+            <Link href={`/teams/${match.awayTeamId}`} className="text-xl font-bold hover:text-green-700">
+              {match.awayTeamName}
             </Link>
           </div>
         </div>
 
-        {match.completed && insights && insights.length > 0 && (
+        {match.isCompleted && insights && insights.length > 0 && (
           <div className="mt-8">
             <h2 className="text-xl font-semibold mb-4">Match Summary</h2>
             <div className="bg-green-50 p-4 rounded-md">
@@ -123,7 +123,7 @@ export default function MatchDetailPage({ params }: { params: Promise<{ id: stri
           </div>
         )}
 
-        {isAdmin && match.completed && (
+        {isAdmin && match.isCompleted && (
           <div className="mt-6">
             <button
               onClick={handleGenerateInsight}
@@ -136,7 +136,7 @@ export default function MatchDetailPage({ params }: { params: Promise<{ id: stri
         )}
       </div>
 
-      {match.completed && insights && insights.length > 0 && (
+      {match.isCompleted && insights && insights.length > 0 && (
         <div className="bg-white shadow-md rounded-lg p-6">
           <h2 className="text-xl font-semibold mb-4">AI Insights</h2>
           <div className="space-y-4">

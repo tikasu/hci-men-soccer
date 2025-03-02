@@ -88,7 +88,7 @@ export default function StandingsPage() {
             <tbody className="text-gray-600 text-sm">
               {standings && standings.length > 0 ? (
                 standings.map((standing: Standing, index: number) => (
-                  <React.Fragment key={standing.id}>
+                  <React.Fragment key={standing.teamId}>
                     <tr 
                       className={`border-b border-gray-200 hover:bg-gray-100 cursor-pointer transition-colors ${index < 8 ? 'bg-green-50' : ''} ${selectedTeamId === standing.teamId ? 'bg-green-100' : ''}`}
                       onClick={() => handleTeamClick(standing.teamId)}

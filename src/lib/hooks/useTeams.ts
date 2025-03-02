@@ -107,9 +107,9 @@ export function useDeletePlayer() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: ({ id, teamId }: { id: string; teamId: string }) => {
-      const result = deletePlayer(id);
-      return { result, teamId };
+    mutationFn: async ({ id, teamId }: { id: string; teamId: string }) => {
+      const result = await deletePlayer(id);
+      return result;
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['players', 'team', variables.teamId] });

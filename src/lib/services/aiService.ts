@@ -292,12 +292,12 @@ export const getInsightsByTypeAndId = async (type: 'team' | 'player' | 'match', 
 };
 
 // Get latest insights
-export const getLatestInsights = async (limit: number = 5): Promise<AIInsight[]> => {
+export const getLatestInsights = async (limitCount: number = 5): Promise<AIInsight[]> => {
   try {
     const insightsQuery = query(
       collection(db, INSIGHTS_COLLECTION),
       orderBy('createdAt', 'desc'),
-      limit
+      limit(limitCount)
     );
     
     const insightsSnapshot = await getDocs(insightsQuery);

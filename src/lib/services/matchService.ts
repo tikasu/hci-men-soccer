@@ -185,10 +185,20 @@ export const getStandingByTeamId = async (teamId: string): Promise<Standing | nu
     
     if (!standingSnapshot.empty) {
       const standingDoc = standingSnapshot.docs[0];
+      const standingData = standingDoc.data() as Omit<Standing, 'id'>;
       return {
-        id: standingDoc.id,
-        ...standingDoc.data()
-      } as Standing;
+        teamId: standingData.teamId,
+        teamName: standingData.teamName,
+        played: standingData.played,
+        won: standingData.won,
+        drawn: standingData.drawn,
+        lost: standingData.lost,
+        goalsFor: standingData.goalsFor,
+        goalsAgainst: standingData.goalsAgainst,
+        points: standingData.points,
+        manuallyRanked: standingData.manuallyRanked,
+        manualRank: standingData.manualRank,
+      };
     }
     
     return null;
@@ -426,10 +436,22 @@ export const getAllStandingsWithManualRanking = async (): Promise<Standing[]> =>
     const standingSnapshot = await getDocs(standingsCollection);
     
     // Get all standings
-    const standings = standingSnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    } as Standing));
+    const standings = standingSnapshot.docs.map(doc => {
+      const data = doc.data() as Omit<Standing, 'id'>;
+      return {
+        teamId: data.teamId,
+        teamName: data.teamName,
+        played: data.played,
+        won: data.won,
+        drawn: data.drawn,
+        lost: data.lost,
+        goalsFor: data.goalsFor,
+        goalsAgainst: data.goalsAgainst,
+        points: data.points,
+        manuallyRanked: data.manuallyRanked,
+        manualRank: data.manualRank,
+      };
+    });
     
     // First, sort by points and goal difference (automatic ranking)
     let sortedStandings = [...standings].sort((a, b) => {

@@ -35,7 +35,7 @@ export default function TeamDetailPage({ params }: { params: Promise<{ id: strin
     insights[0].content.includes("AI insights are not available");
 
   // Find team ranking
-  const teamRanking = allStandings?.findIndex(s => s.teamId === teamId) + 1 || '-';
+  const teamRanking = allStandings ? allStandings.findIndex(s => s.teamId === teamId) + 1 || '-' : '-';
 
   // Load the ID from params when component mounts
   useEffect(() => {

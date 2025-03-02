@@ -17,7 +17,7 @@ export function usePlayerPool() {
     queryKey: ['player-pool'],
     queryFn: getAllPoolPlayers,
     staleTime: 0, // Consider data stale immediately
-    cacheTime: 0, // Don't cache the data
+    gcTime: 0, // Don't cache the data (previously cacheTime)
     refetchOnMount: true, // Always refetch when component mounts
     refetchOnWindowFocus: true, // Refetch when window regains focus
   });
@@ -105,7 +105,7 @@ export function useRemovePlayerFromTeam() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: ({ 
+    mutationFn: async ({ 
       playerId, 
       teamPlayerId, 
       teamId 
@@ -114,8 +114,8 @@ export function useRemovePlayerFromTeam() {
       teamPlayerId: string;
       teamId: string;
     }) => {
-      const result = removePlayerFromTeam(playerId, teamPlayerId);
-      return { result, teamId };
+      const result = await removePlayerFromTeam(playerId, teamPlayerId);
+      return result;
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['player-pool'] });

@@ -147,10 +147,24 @@ export const getPlayoffMatchesByRound = async (round: 'quarterfinal' | 'semifina
       const q = query(playoffMatchesCollection);
       const matchSnapshot = await getDocs(q);
       
-      const allMatches = matchSnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      } as PlayoffMatch));
+      const allMatches = matchSnapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ref: doc.ref,
+          round: data.round,
+          matchNumber: data.matchNumber,
+          homeTeamId: data.homeTeamId,
+          awayTeamId: data.awayTeamId,
+          homeTeamName: data.homeTeamName,
+          awayTeamName: data.awayTeamName,
+          homeScore: data.homeScore,
+          awayScore: data.awayScore,
+          date: data.date,
+          location: data.location,
+          isCompleted: data.isCompleted
+        };
+      });
       
       // Filter by round and sort by matchNumber client-side
       const filteredMatches = allMatches
@@ -370,11 +384,24 @@ export const updateNextRoundMatch = async (
       const q = query(playoffMatchesCollection);
       const matchSnapshot = await getDocs(q);
       
-      const allMatches = matchSnapshot.docs.map(doc => ({
-        id: doc.id,
-        ref: doc.ref,
-        ...doc.data()
-      }));
+      const allMatches = matchSnapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ref: doc.ref,
+          round: data.round,
+          matchNumber: data.matchNumber,
+          homeTeamId: data.homeTeamId,
+          awayTeamId: data.awayTeamId,
+          homeTeamName: data.homeTeamName,
+          awayTeamName: data.awayTeamName,
+          homeScore: data.homeScore,
+          awayScore: data.awayScore,
+          date: data.date,
+          location: data.location,
+          isCompleted: data.isCompleted
+        };
+      });
       
       // Filter by round and matchNumber client-side
       const nextMatches = allMatches.filter(

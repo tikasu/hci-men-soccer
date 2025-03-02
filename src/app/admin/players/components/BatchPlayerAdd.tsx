@@ -142,6 +142,7 @@ export default function BatchPlayerAdd({ teamId, onSuccess, onCancel }: BatchPla
           name: playerData.name,
           position: playerData.position,
           number: playerData.number,
+          teamId: teamId,
           stats: defaultStats
         });
         

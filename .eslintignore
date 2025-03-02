@@ -1,0 +1,15 @@
+# Build output
+.next/
+out/
+
+# Node modules
+node_modules/
+
+# Scripts directory (contains JS files with require statements)
+src/scripts/
+
+# Environment variables
+.env*
+
+# Public directory
+public/ 

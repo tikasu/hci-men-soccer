@@ -135,6 +135,7 @@ export default function AdminPlayersPage() {
         name: formData.name,
         position: formData.position,
         number: formData.number || '',
+        teamId: selectedTeam,
         stats: formData.stats
       });
       setSuccess('Player added successfully!');

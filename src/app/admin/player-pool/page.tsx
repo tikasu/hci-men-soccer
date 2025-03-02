@@ -28,7 +28,7 @@ export default function PlayerPoolPage() {
   
   // Add console logs to debug player data
   useEffect(() => {
-    if (poolPlayers) {
+    if (poolPlayers && Array.isArray(poolPlayers)) {
       console.log(`Total players in pool: ${poolPlayers.length}`);
       console.log(`Active players: ${poolPlayers.filter(p => p.isActive).length}`);
       console.log(`Goalkeepers: ${poolPlayers.filter(p => p.position === 'Goalkeeper').length}`);
@@ -43,7 +43,7 @@ export default function PlayerPoolPage() {
   }, [isAuthenticated, isAdmin, loading, router]);
 
   // Filter and search players
-  const filteredPlayers = poolPlayers
+  const filteredPlayers = poolPlayers && Array.isArray(poolPlayers)
     ? poolPlayers.filter(player => {
         // Filter by search term
         if (searchTerm && !player.name.toLowerCase().includes(searchTerm.toLowerCase())) {

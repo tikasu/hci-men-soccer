@@ -233,8 +233,8 @@ export default function AdminMatchesPage() {
         date: dateTimeString, // Store as string without timezone conversion
         location: formData.location || '',
         isCompleted: formData.isCompleted,
-        homeScore: formData.isCompleted && formData.homeScore ? parseInt(formData.homeScore) : null,
-        awayScore: formData.isCompleted && formData.awayScore ? parseInt(formData.awayScore) : null,
+        homeScore: formData.isCompleted && formData.homeScore ? parseInt(formData.homeScore) : undefined,
+        awayScore: formData.isCompleted && formData.awayScore ? parseInt(formData.awayScore) : undefined,
         playerStats: formData.isCompleted ? {
           goalScorers: goalScorers.filter(scorer => scorer.playerId && scorer.count > 0),
           assistProviders: assistProviders.filter(provider => provider.playerId && provider.count > 0)
@@ -328,8 +328,8 @@ export default function AdminMatchesPage() {
         date: dateTimeString, // Store as string without timezone conversion
         location: formData.location || '',
         isCompleted: formData.isCompleted,
-        homeScore: formData.isCompleted && formData.homeScore ? parseInt(formData.homeScore) : null,
-        awayScore: formData.isCompleted && formData.awayScore ? parseInt(formData.awayScore) : null,
+        homeScore: formData.isCompleted && formData.homeScore ? parseInt(formData.homeScore) : undefined,
+        awayScore: formData.isCompleted && formData.awayScore ? parseInt(formData.awayScore) : undefined,
         playerStats: formData.isCompleted ? {
           goalScorers: goalScorers.filter(scorer => scorer.playerId && scorer.count > 0),
           assistProviders: assistProviders.filter(provider => provider.playerId && provider.count > 0)
@@ -613,8 +613,8 @@ export default function AdminMatchesPage() {
           date: dateTimeString,
           location: matchData.location || '',
           isCompleted: matchData.isCompleted,
-          homeScore: matchData.isCompleted && matchData.homeScore ? parseInt(matchData.homeScore) : null,
-          awayScore: matchData.isCompleted && matchData.awayScore ? parseInt(matchData.awayScore) : null
+          homeScore: matchData.isCompleted && matchData.homeScore ? parseInt(matchData.homeScore) : undefined,
+          awayScore: matchData.isCompleted && matchData.awayScore ? parseInt(matchData.awayScore) : undefined
         };
 
         const matchId = await createMatchMutation.mutateAsync(newMatch);

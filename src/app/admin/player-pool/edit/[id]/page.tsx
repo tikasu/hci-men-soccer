@@ -6,8 +6,8 @@ import { useAuth } from '@/lib/hooks/useAuth';
 import { usePoolPlayer, useUpdatePoolPlayer } from '@/lib/hooks/usePlayerPool';
 import Link from 'next/link';
 
-export default function EditPoolPlayerPage({ params }: { params: { id: string } }) {
-  const playerId = params.id;
+export default function EditPoolPlayerPage({ params }: { params: Promise<{ id: string }> }) {
+  const [playerId, setPlayerId] = useState<string>('');
   const router = useRouter();
   const { user, isAdmin, isAuthenticated, loading } = useAuth();
   const { data: player, isLoading: isLoadingPlayer } = usePoolPlayer(playerId);
@@ -27,6 +27,20 @@ export default function EditPoolPlayerPage({ params }: { params: { id: string } 
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+
+  // Load the ID from params when component mounts
+  useEffect(() => {
+    const loadParams = async () => {
+      try {
+        const resolvedParams = await params;
+        setPlayerId(resolvedParams.id);
+      } catch (err) {
+        console.error('Error resolving params:', err);
+      }
+    };
+    
+    loadParams();
+  }, [params]);
 
   useEffect(() => {
     if (!loading && (!isAuthenticated || !isAdmin)) {

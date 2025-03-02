@@ -1,20 +1,33 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useMatch } from '@/lib/hooks/useMatches';
 import { useInsightsByTypeAndId, useGenerateMatchInsight } from '@/lib/hooks/useAIInsights';
 import { useAuth } from '@/lib/hooks/useAuth';
+import { useTeams } from '@/lib/hooks/useTeams';
 import Link from 'next/link';
-import { use } from 'react';
 
-export default function MatchDetailPage({ params }: { params: { id: string } }) {
-  // Use React.use() to unwrap params as recommended by Next.js
-  const unwrappedParams = use(params);
-  const { id } = unwrappedParams;
-  
-  const { data: match, isLoading, error } = useMatch(id);
-  const { data: insights } = useInsightsByTypeAndId('match', id);
+export default function MatchDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const [matchId, setMatchId] = useState<string>('');
+  const { data: match, isLoading: isLoadingMatch } = useMatch(matchId);
+  const { data: teams, isLoading: isLoadingTeams } = useTeams();
+  const { data: insights } = useInsightsByTypeAndId('match', matchId);
   const generateInsight = useGenerateMatchInsight();
   const { isAdmin } = useAuth();
+
+  // Load the ID from params when component mounts
+  useEffect(() => {
+    const loadParams = async () => {
+      try {
+        const resolvedParams = await params;
+        setMatchId(resolvedParams.id);
+      } catch (err) {
+        console.error('Error resolving params:', err);
+      }
+    };
+    
+    loadParams();
+  }, [params]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -26,7 +39,7 @@ export default function MatchDetailPage({ params }: { params: { id: string } }) 
     });
   };
 
-  if (isLoading) {
+  if (isLoadingMatch || isLoadingTeams) {
     return (
       <div className="flex justify-center items-center h-[50vh]">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-800"></div>
@@ -34,7 +47,7 @@ export default function MatchDetailPage({ params }: { params: { id: string } }) 
     );
   }
 
-  if (error || !match) {
+  if (!match) {
     return (
       <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
         <strong className="font-bold">Error!</strong>
@@ -44,7 +57,7 @@ export default function MatchDetailPage({ params }: { params: { id: string } }) 
   }
 
   const handleGenerateInsight = () => {
-    generateInsight.mutate(id);
+    generateInsight.mutate(matchId);
   };
 
   return (

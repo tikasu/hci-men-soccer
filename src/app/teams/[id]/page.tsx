@@ -1,30 +1,28 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTeam, usePlayersByTeamId } from '@/lib/hooks/useTeams';
 import { useStandingByTeamId, useStandings } from '@/lib/hooks/useMatches';
 import { useInsightsByTypeAndId, useGenerateTeamInsight, useAIInsightsEnabled } from '@/lib/hooks/useAIInsights';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { Player } from '@/lib/types';
-import { use } from 'react';
+import { useRouter } from 'next/navigation';
 
 // Define sort types
 type SortField = 'name' | 'position' | 'goals' | 'assists' | 'gamesPlayed';
 type SortDirection = 'asc' | 'desc';
 
-export default function TeamDetailPage({ params }: { params: { id: string } }) {
-  // Use React.use() to unwrap params as recommended by Next.js
-  const unwrappedParams = use(params);
-  const { id } = unwrappedParams;
-  
-  const { data: team, isLoading: isLoadingTeam, error: teamError } = useTeam(id);
-  const { data: players, isLoading: isLoadingPlayers } = usePlayersByTeamId(id);
-  const { data: standing } = useStandingByTeamId(id);
+export default function TeamDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const [teamId, setTeamId] = useState<string>('');
+  const router = useRouter();
+  const { isAdmin } = useAuth();
+  const { data: team, isLoading: isLoadingTeam, error: teamError } = useTeam(teamId);
+  const { data: players, isLoading: isLoadingPlayers } = usePlayersByTeamId(teamId);
+  const { data: standing } = useStandingByTeamId(teamId);
   const { data: allStandings } = useStandings();
-  const { data: insights } = useInsightsByTypeAndId('team', id);
+  const { data: insights } = useInsightsByTypeAndId('team', teamId);
   const { data: isAIEnabled } = useAIInsightsEnabled();
   const generateInsight = useGenerateTeamInsight();
-  const { isAdmin } = useAuth();
 
   const [activeTab, setActiveTab] = useState<'roster' | 'stats' | 'insights'>('roster');
   
@@ -37,7 +35,21 @@ export default function TeamDetailPage({ params }: { params: { id: string } }) {
     insights[0].content.includes("AI insights are not available");
 
   // Find team ranking
-  const teamRanking = allStandings?.findIndex(s => s.teamId === id) + 1 || '-';
+  const teamRanking = allStandings?.findIndex(s => s.teamId === teamId) + 1 || '-';
+
+  // Load the ID from params when component mounts
+  useEffect(() => {
+    const loadParams = async () => {
+      try {
+        const resolvedParams = await params;
+        setTeamId(resolvedParams.id);
+      } catch (err) {
+        console.error('Error resolving params:', err);
+      }
+    };
+    
+    loadParams();
+  }, [params]);
 
   if (isLoadingTeam) {
     return (
@@ -57,7 +69,7 @@ export default function TeamDetailPage({ params }: { params: { id: string } }) {
   }
 
   const handleGenerateInsight = () => {
-    generateInsight.mutate(id);
+    generateInsight.mutate(teamId);
   };
 
   // Handle sorting

@@ -27,15 +27,22 @@ export default function Navbar() {
 
   return (
     <nav className="bg-[#0a2240] text-white shadow-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-12">
-          {/* Desktop menu */}
-          <div className="flex items-center space-x-4">
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-12">
+          {/* Logo/Brand - visible on all screens */}
+          <div className="flex items-center">
+            <Link href="/" className="text-white font-bold">
+              HCI Soccer
+            </Link>
+          </div>
+
+          {/* Desktop menu - hidden on mobile */}
+          <div className="hidden md:flex items-center space-x-1">
             {navItems.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
-                className={`px-3 py-2 text-sm font-medium transition-colors duration-200 ${
+                className={`px-2 sm:px-3 py-2 text-sm font-medium transition-colors duration-200 ${
                   pathname === item.href
                     ? 'text-white border-b-2 border-green-400 bg-[#0c2a4d] rounded-t-md'
                     : 'text-gray-200 hover:text-white hover:bg-[#0c2a4d] hover:bg-opacity-50 rounded-md'
@@ -46,26 +53,26 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Authentication section moved to the right */}
-          <div className="ml-auto flex items-center">
+          {/* Authentication section - hidden on mobile */}
+          <div className="hidden md:flex items-center">
             {isAuthenticated ? (
               <div className="flex items-center">
-                <span className="mr-2 text-sm">{user?.displayName || user?.email}</span>
+                <span className="mr-2 text-sm hidden lg:inline">{user?.displayName || user?.email}</span>
                 {isAdmin && (
                   <Link
                     href="/admin"
-                    className={`px-3 py-2 rounded-md text-sm font-medium mr-2 transition-colors duration-200 ${
+                    className={`px-2 sm:px-3 py-2 rounded-md text-sm font-medium mr-2 transition-colors duration-200 ${
                       pathname.startsWith('/admin')
                         ? 'text-yellow-300 bg-[#0c2a4d] border-b-2 border-yellow-400'
                         : 'text-yellow-300 hover:text-yellow-100 hover:bg-[#0c2a4d] hover:bg-opacity-50'
                     }`}
                   >
-                    Admin Dashboard
+                    Admin
                   </Link>
                 )}
                 <button
                   onClick={() => signOut()}
-                  className="px-3 py-2 rounded-md text-sm font-medium text-gray-200 hover:text-white hover:bg-[#0c2a4d] hover:bg-opacity-50 transition-colors duration-200"
+                  className="px-2 sm:px-3 py-2 rounded-md text-sm font-medium text-gray-200 hover:text-white hover:bg-[#0c2a4d] hover:bg-opacity-50 transition-colors duration-200"
                 >
                   Logout
                 </button>
@@ -73,7 +80,7 @@ export default function Navbar() {
             ) : (
               <Link
                 href="/login"
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+                className={`px-2 sm:px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
                   pathname === '/login'
                     ? 'text-white bg-[#0c2a4d] border-b-2 border-green-400'
                     : 'text-gray-200 hover:text-white hover:bg-[#0c2a4d] hover:bg-opacity-50'
@@ -85,11 +92,11 @@ export default function Navbar() {
           </div>
 
           {/* Mobile menu button */}
-          <div className="flex md:hidden items-center ml-2">
+          <div className="flex md:hidden items-center">
             <button
               onClick={toggleMenu}
               className="inline-flex items-center justify-center p-2 rounded-md text-gray-200 hover:text-white focus:outline-none"
-              aria-expanded="false"
+              aria-expanded={isMenuOpen ? 'true' : 'false'}
             >
               <span className="sr-only">Open main menu</span>
               {/* Icon when menu is closed */}
@@ -139,7 +146,7 @@ export default function Navbar() {
 
           {isAuthenticated ? (
             <div className="pt-4 pb-3 border-t border-gray-700">
-              <div className="px-3 py-2 text-sm">{user?.displayName || user?.email}</div>
+              <div className="px-3 py-2 text-sm font-medium">{user?.displayName || user?.email}</div>
               {isAdmin && (
                 <Link
                   href="/admin"

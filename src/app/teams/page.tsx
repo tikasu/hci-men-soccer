@@ -28,8 +28,8 @@ export default function TeamsPage() {
   const sortedTeams = teams ? [...teams].sort((a, b) => a.name.localeCompare(b.name)) : [];
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-6 text-center">Teams</h1>
+    <div className="px-4 sm:px-6 py-6">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center text-green-900">Teams</h1>
       
       {sortedTeams && sortedTeams.length > 0 ? (
         <div className="max-w-md mx-auto">
@@ -37,12 +37,12 @@ export default function TeamsPage() {
             <Link 
               key={team.id} 
               href={`/teams/${team.id}`}
-              className="block bg-white shadow-md hover:shadow-lg transition-shadow rounded-lg overflow-hidden mb-4"
+              className="block bg-white shadow-md hover:shadow-lg transition-shadow rounded-lg overflow-hidden mb-4 border border-gray-200"
             >
-              <div className="p-6">
-                <h2 className="text-xl font-semibold mb-2">{team.name}</h2>
+              <div className="p-4 sm:p-6">
+                <h2 className="text-xl sm:text-2xl font-bold mb-2 text-green-800">{team.name}</h2>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">View Roster</span>
+                  <span className="text-base text-gray-700 font-medium">View Roster</span>
                   <svg 
                     xmlns="http://www.w3.org/2000/svg" 
                     className="h-5 w-5 text-green-800" 

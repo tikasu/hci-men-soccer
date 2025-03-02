@@ -162,40 +162,40 @@ export default function SchedulePage() {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-full">
-      <h1 className="text-3xl font-bold mb-6 text-center">Match Schedule</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center text-green-900">Match Schedule</h1>
       
       {/* Tabs - Centered */}
-      <div className="flex justify-center border-b border-gray-200 mb-6">
-        <div className="inline-flex space-x-1">
+      <div className="flex justify-center border-b border-gray-200 mb-6 overflow-x-auto">
+        <div className="inline-flex">
           <button
-            className={`py-2 px-6 font-medium transition-colors duration-200 ${
+            className={`py-2 px-3 sm:px-6 font-medium transition-colors duration-200 ${
               activeTab === 'upcoming'
                 ? 'text-green-700 border-b-2 border-green-700 bg-green-50'
                 : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
             }`}
             onClick={() => setActiveTab('upcoming')}
           >
-            Upcoming Matches
+            Upcoming
           </button>
           <button
-            className={`py-2 px-6 font-medium transition-colors duration-200 ${
+            className={`py-2 px-3 sm:px-6 font-medium transition-colors duration-200 ${
               activeTab === 'past'
                 ? 'text-green-700 border-b-2 border-green-700 bg-green-50'
                 : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
             }`}
             onClick={() => setActiveTab('past')}
           >
-            Past Matches
+            Past
           </button>
           <button
-            className={`py-2 px-6 font-medium transition-colors duration-200 ${
+            className={`py-2 px-3 sm:px-6 font-medium transition-colors duration-200 ${
               activeTab === 'playoffs'
                 ? 'text-green-700 border-b-2 border-green-700 bg-green-50'
                 : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
             }`}
             onClick={() => setActiveTab('playoffs')}
           >
-            Playoff Matches
+            Playoffs
           </button>
         </div>
       </div>
@@ -207,7 +207,7 @@ export default function SchedulePage() {
             upcomingDateKeys.length > 0 ? (
               upcomingDateKeys.map(dateKey => (
                 <div key={dateKey} className="mb-8">
-                  <h2 className="text-xl font-semibold mb-4 pb-2 border-b text-green-800">
+                  <h2 className="text-lg sm:text-xl font-semibold mb-4 pb-2 border-b text-green-800">
                     {formatDateHeader(dateKey)}
                   </h2>
                   <div className="space-y-4">
@@ -217,27 +217,27 @@ export default function SchedulePage() {
                         className="bg-white shadow-md rounded-lg overflow-hidden border-l-4 border-green-500"
                       >
                         <div className="p-4">
-                          <div className="flex justify-between items-center mb-2">
-                            <div className="text-sm font-medium text-gray-500">
+                          <div className="flex justify-between items-center mb-3">
+                            <div className="text-sm font-medium text-gray-700">
                               {formatTime(match.date)}
                             </div>
                             {match.location && (
-                              <div className="text-sm text-gray-500">{match.location}</div>
+                              <div className="text-sm text-gray-700">{match.location}</div>
                             )}
                           </div>
                           
-                          <div className="flex items-center justify-center">
-                            <div className="flex items-center space-x-3">
-                              <div className="text-right min-w-[120px]">
-                                <Link href={`/teams/${match.homeTeamId}`} className="font-medium hover:text-green-700">
+                          <div className="flex flex-col sm:flex-row items-center justify-center">
+                            <div className="flex flex-col sm:flex-row items-center w-full">
+                              <div className="text-center sm:text-right sm:w-[45%] mb-2 sm:mb-0">
+                                <Link href={`/teams/${match.homeTeamId}`} className="font-bold text-base sm:text-lg text-green-800 hover:text-green-700">
                                   {match.homeTeamName}
                                 </Link>
                               </div>
-                              <div className="flex items-center space-x-2">
-                                <span className="text-gray-400">vs</span>
+                              <div className="flex items-center justify-center sm:w-[10%] my-1 sm:my-0">
+                                <span className="text-gray-600 font-medium mx-2">vs</span>
                               </div>
-                              <div className="text-left min-w-[120px]">
-                                <Link href={`/teams/${match.awayTeamId}`} className="font-medium hover:text-green-700">
+                              <div className="text-center sm:text-left sm:w-[45%]">
+                                <Link href={`/teams/${match.awayTeamId}`} className="font-bold text-base sm:text-lg text-green-800 hover:text-green-700">
                                   {match.awayTeamName}
                                 </Link>
                               </div>
@@ -250,103 +250,79 @@ export default function SchedulePage() {
                 </div>
               ))
             ) : (
-              <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded">
-                No upcoming matches scheduled at this time.
+              <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative" role="alert">
+                <strong className="font-bold">No upcoming matches!</strong>
+                <span className="block sm:inline"> There are currently no upcoming matches scheduled.</span>
               </div>
             )
           ) : (
             pastDateKeys.length > 0 ? (
               pastDateKeys.map(dateKey => (
                 <div key={dateKey} className="mb-8">
-                  <h2 className="text-xl font-semibold mb-4 pb-2 border-b text-gray-700">
+                  <h2 className="text-lg sm:text-xl font-semibold mb-4 pb-2 border-b text-green-800">
                     {formatDateHeader(dateKey)}
                   </h2>
                   <div className="space-y-4">
                     {pastMatchesByDate[dateKey].map((match: Match) => (
-                      <div 
+                      <Link 
                         key={match.id} 
-                        className={`bg-white shadow-md rounded-lg overflow-hidden border-l-4 ${
-                          match.isCompleted ? 'border-gray-400' : 'border-yellow-400'
-                        }`}
+                        href={`/schedule/${match.id}`}
+                        className="block bg-white shadow-md hover:shadow-lg rounded-lg overflow-hidden border-l-4 border-blue-500"
                       >
                         <div className="p-4">
-                          <div className="flex justify-between items-center mb-2">
-                            <div className="text-sm font-medium text-gray-500">
+                          <div className="flex justify-between items-center mb-3">
+                            <div className="text-sm font-medium text-gray-700">
                               {formatTime(match.date)}
                             </div>
                             {match.location && (
-                              <div className="text-sm text-gray-500">{match.location}</div>
+                              <div className="text-sm text-gray-700">{match.location}</div>
                             )}
                           </div>
                           
-                          <div className="flex items-center justify-center">
-                            <div className="flex items-center space-x-3">
-                              <div className="text-right min-w-[120px]">
-                                <Link href={`/teams/${match.homeTeamId}`} className="font-medium hover:text-green-700">
+                          <div className="flex flex-col sm:flex-row items-center justify-center">
+                            <div className="flex flex-col sm:flex-row items-center w-full">
+                              <div className="text-center sm:text-right sm:w-[42%] mb-2 sm:mb-0">
+                                <span className="font-bold text-base sm:text-lg text-green-800">
                                   {match.homeTeamName}
-                                </Link>
+                                </span>
                               </div>
-                              <div className="flex items-center space-x-2">
-                                {match.isCompleted ? (
-                                  <>
-                                    {match.homeScore !== undefined && match.awayScore !== undefined ? (
-                                      <>
-                                        <span className={`font-bold ${
-                                          match.homeScore > match.awayScore 
-                                            ? 'text-green-600' 
-                                            : match.homeScore < match.awayScore 
-                                              ? 'text-red-600' 
-                                              : 'text-gray-800'
-                                        }`}>{match.homeScore}</span>
-                                        <span className="text-gray-400">-</span>
-                                        <span className={`font-bold ${
-                                          match.awayScore > match.homeScore 
-                                            ? 'text-green-600' 
-                                            : match.awayScore < match.homeScore 
-                                              ? 'text-red-600' 
-                                              : 'text-gray-800'
-                                        }`}>{match.awayScore}</span>
-                                      </>
-                                    ) : (
-                                      <>
-                                        <span className="font-bold">{match.homeScore}</span>
-                                        <span className="text-gray-400">-</span>
-                                        <span className="font-bold">{match.awayScore}</span>
-                                      </>
-                                    )}
-                                  </>
-                                ) : (
-                                  <span className="text-yellow-600 text-sm font-medium">Result Pending</span>
-                                )}
+                              <div className="flex items-center justify-center sm:w-[16%] my-1 sm:my-0">
+                                <div className="flex items-center space-x-2">
+                                  <span className="font-bold text-base sm:text-lg">{match.homeScore ?? 0}</span>
+                                  <span className="text-gray-600 mx-1">-</span>
+                                  <span className="font-bold text-base sm:text-lg">{match.awayScore ?? 0}</span>
+                                </div>
                               </div>
-                              <div className="text-left min-w-[120px]">
-                                <Link href={`/teams/${match.awayTeamId}`} className="font-medium hover:text-green-700">
+                              <div className="text-center sm:text-left sm:w-[42%]">
+                                <span className="font-bold text-base sm:text-lg text-green-800">
                                   {match.awayTeamName}
-                                </Link>
+                                </span>
                               </div>
                             </div>
                           </div>
                         </div>
-                      </div>
+                      </Link>
                     ))}
                   </div>
                 </div>
               ))
             ) : (
-              <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded">
-                No past matches available.
+              <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative" role="alert">
+                <strong className="font-bold">No past matches!</strong>
+                <span className="block sm:inline"> There are no completed matches yet.</span>
               </div>
             )
           )}
         </div>
       ) : (
-        // Playoff Matches Tab - Full width to match admin view exactly like admin mode
-        <div className="w-full">
+        // Playoff bracket section remains unchanged
+        <div className="max-w-6xl mx-auto">
           {playoffMatches && playoffMatches.length > 0 ? (
             <PlayoffBracket matches={playoffMatches} />
           ) : (
-            <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded">
-              Playoff schedule has not been set yet.
+            <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative" role="alert">
+              <strong className="font-bold">No playoff matches!</strong>
+              <span className="block sm:inline"> The playoff schedule has not been set yet.</span>
             </div>
           )}
         </div>

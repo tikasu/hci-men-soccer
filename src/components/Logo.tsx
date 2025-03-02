@@ -23,8 +23,9 @@ export default function Logo() {
               <Image 
                 src="/HCI logo.png" 
                 alt="HCI Logo" 
-                width={125}
-                height={30}
+                width={100}
+                height={24}
+                className="w-[80px] sm:w-[100px] md:w-[125px]"
                 priority
                 style={{
                   objectFit: 'contain',
@@ -35,7 +36,7 @@ export default function Logo() {
           </Link>
           
           {/* League Name */}
-          <div className="text-[#0a2240] font-semibold text-xl md:text-2xl">
+          <div className="text-[#0a2240] font-bold text-lg sm:text-xl md:text-2xl">
             {leagueName}
           </div>
         </div>

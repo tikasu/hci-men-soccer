@@ -272,7 +272,7 @@ export default function AdminStandingsPage() {
             <tbody className="text-gray-600 text-xs">
               {standings && standings.length > 0 ? (
                 standings.map((standing: Standing, index: number) => (
-                  <tr key={standing.id} className={`border-b border-gray-200 hover:bg-gray-50 ${standing.manuallyRanked ? 'bg-blue-50' : ''}`}>
+                  <tr key={standing.teamId} className={`border-b border-gray-200 hover:bg-gray-50 ${standing.manuallyRanked ? 'bg-blue-50' : ''}`}>
                     {isEditingRanks && (
                       <td className="py-1 px-1 text-center">
                         <input

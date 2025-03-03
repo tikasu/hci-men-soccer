@@ -42,6 +42,7 @@ export default function TeamDetailPage({ params }: { params: Promise<{ id: strin
     const loadParams = async () => {
       try {
         const resolvedParams = await params;
+        console.log('Resolved team ID:', resolvedParams.id);
         setTeamId(resolvedParams.id);
       } catch (err) {
         console.error('Error resolving params:', err);
@@ -53,17 +54,23 @@ export default function TeamDetailPage({ params }: { params: Promise<{ id: strin
 
   if (isLoadingTeam) {
     return (
-      <div className="flex justify-center items-center h-[50vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-800"></div>
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex justify-center items-center h-[50vh]">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-800"></div>
+        </div>
       </div>
     );
   }
 
   if (teamError || !team) {
+    console.error('Team error or no team data:', teamError, 'Team ID:', teamId);
     return (
-      <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-        <strong className="font-bold">Error!</strong>
-        <span className="block sm:inline"> Failed to load team information. Please try again later.</span>
+      <div className="container mx-auto px-4 py-8">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <strong className="font-bold">Error!</strong>
+          <span className="block sm:inline"> Failed to load team information. Please try again later.</span>
+          <p className="mt-2 text-xs">Team ID: {teamId || 'Not available'}</p>
+        </div>
       </div>
     );
   }
@@ -142,7 +149,7 @@ export default function TeamDetailPage({ params }: { params: Promise<{ id: strin
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold mb-2 break-words">{team.name}</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold mb-2 break-words overflow-hidden">{team.name}</h1>
         
         {standing && (
           <div className="mb-4 flex flex-wrap items-center gap-3 sm:space-x-4">

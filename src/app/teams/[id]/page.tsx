@@ -141,20 +141,20 @@ export default function TeamDetailPage({ params }: { params: Promise<{ id: strin
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="bg-white shadow-md rounded-lg p-6 mb-6">
-        <h1 className="text-3xl font-bold mb-2">{team.name}</h1>
+      <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 mb-6">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-2 break-words">{team.name}</h1>
         
         {standing && (
-          <div className="mb-4 flex items-center space-x-4">
-            <div>
+          <div className="mb-4 flex flex-wrap items-center gap-3 sm:space-x-4">
+            <div className="flex items-center">
               <span className="font-semibold text-green-800">Rank</span>
               <span className="ml-1 text-green-600">{teamRanking}</span>
             </div>
-            <div>
+            <div className="flex items-center">
               <span className="font-semibold text-blue-800">Points</span>
               <span className="ml-1 text-blue-600">{standing.points}</span>
             </div>
-            <div>
+            <div className="flex items-center">
               <span className="font-semibold text-purple-800">Record</span>
               <span className="ml-1 text-purple-600">({standing.won}W - {standing.drawn}D - {standing.lost}L)</span>
             </div>
@@ -197,7 +197,7 @@ export default function TeamDetailPage({ params }: { params: Promise<{ id: strin
           <nav className="flex -mb-px">
             <button
               onClick={() => setActiveTab('roster')}
-              className={`py-4 px-6 font-medium text-sm ${
+              className={`py-3 px-3 sm:py-4 sm:px-6 font-medium text-xs sm:text-sm ${
                 activeTab === 'roster'
                   ? 'border-b-2 border-green-700 text-green-700'
                   : 'text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -207,7 +207,7 @@ export default function TeamDetailPage({ params }: { params: Promise<{ id: strin
             </button>
             <button
               onClick={() => setActiveTab('stats')}
-              className={`py-4 px-6 font-medium text-sm ${
+              className={`py-3 px-3 sm:py-4 sm:px-6 font-medium text-xs sm:text-sm ${
                 activeTab === 'stats'
                   ? 'border-b-2 border-green-700 text-green-700'
                   : 'text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -217,7 +217,7 @@ export default function TeamDetailPage({ params }: { params: Promise<{ id: strin
             </button>
             <button
               onClick={() => setActiveTab('insights')}
-              className={`py-4 px-6 font-medium text-sm ${
+              className={`py-3 px-3 sm:py-4 sm:px-6 font-medium text-xs sm:text-sm ${
                 activeTab === 'insights'
                   ? 'border-b-2 border-green-700 text-green-700'
                   : 'text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -239,48 +239,50 @@ export default function TeamDetailPage({ params }: { params: Promise<{ id: strin
                 </div>
               ) : sortedPlayers && sortedPlayers.length > 0 ? (
                 <div className="bg-white shadow-md rounded-lg overflow-hidden">
-                  <table className="w-full bg-white">
-                    <thead>
-                      <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
-                        <th 
-                          className="py-3 px-6 text-left cursor-pointer hover:bg-gray-200"
-                          onClick={() => handleSort('name')}
-                        >
-                          <div className="flex items-center">
-                            Name
-                            {renderSortIndicator('name')}
-                          </div>
-                        </th>
-                        <th 
-                          className="py-3 px-6 text-left cursor-pointer hover:bg-gray-200"
-                          onClick={() => handleSort('position')}
-                        >
-                          <div className="flex items-center">
-                            Position
-                            {renderSortIndicator('position')}
-                          </div>
-                        </th>
-                        <th 
-                          className="py-3 px-6 text-center cursor-pointer hover:bg-gray-200"
-                          onClick={() => handleSort('goals')}
-                        >
-                          <div className="flex items-center justify-center">
-                            Goals
-                            {renderSortIndicator('goals')}
-                          </div>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="text-gray-600 text-sm">
-                      {sortedPlayers.map((player) => (
-                        <tr key={player.id} className="border-b border-gray-200 hover:bg-gray-50">
-                          <td className="py-3 px-6 text-left whitespace-nowrap font-medium">{player.name}</td>
-                          <td className="py-3 px-6 text-left">{player.position}</td>
-                          <td className="py-3 px-6 text-center">{player.stats.goals}</td>
+                  <div className="overflow-x-auto">
+                    <table className="w-full bg-white">
+                      <thead>
+                        <tr className="bg-gray-100 text-gray-600 uppercase text-xs sm:text-sm leading-normal">
+                          <th 
+                            className="py-2 sm:py-3 px-2 sm:px-6 text-left cursor-pointer hover:bg-gray-200"
+                            onClick={() => handleSort('name')}
+                          >
+                            <div className="flex items-center">
+                              <span className="whitespace-nowrap">Name</span>
+                              {renderSortIndicator('name')}
+                            </div>
+                          </th>
+                          <th 
+                            className="py-2 sm:py-3 px-2 sm:px-6 text-left cursor-pointer hover:bg-gray-200"
+                            onClick={() => handleSort('position')}
+                          >
+                            <div className="flex items-center">
+                              <span className="whitespace-nowrap">Position</span>
+                              {renderSortIndicator('position')}
+                            </div>
+                          </th>
+                          <th 
+                            className="py-2 sm:py-3 px-2 sm:px-6 text-center cursor-pointer hover:bg-gray-200"
+                            onClick={() => handleSort('goals')}
+                          >
+                            <div className="flex items-center justify-center">
+                              <span className="whitespace-nowrap">Goals</span>
+                              {renderSortIndicator('goals')}
+                            </div>
+                          </th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody className="text-gray-600 text-xs sm:text-sm">
+                        {sortedPlayers.map((player) => (
+                          <tr key={player.id} className="border-b border-gray-200 hover:bg-gray-50">
+                            <td className="py-2 sm:py-3 px-2 sm:px-6 text-left font-medium">{player.name}</td>
+                            <td className="py-2 sm:py-3 px-2 sm:px-6 text-left">{player.position}</td>
+                            <td className="py-2 sm:py-3 px-2 sm:px-6 text-center">{player.stats.goals}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               ) : (
                 <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative" role="alert">

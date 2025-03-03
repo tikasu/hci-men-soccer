@@ -140,7 +140,7 @@ export default function StatsPage() {
   }
 
   return (
-    <div className="px-4 sm:px-6 py-6">
+    <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center text-green-900">Player Statistics</h1>
       
       <div className="mb-6">
@@ -165,7 +165,7 @@ export default function StatsPage() {
       
       <div className="bg-white shadow-md rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="min-w-full">
+          <table className="w-full">
             <thead>
               <tr className="bg-green-700 text-white uppercase text-xs sm:text-sm leading-normal">
                 <th className="py-2 sm:py-3 px-3 sm:px-6 text-left">Rank</th>

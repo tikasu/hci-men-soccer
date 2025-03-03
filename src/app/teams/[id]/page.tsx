@@ -140,7 +140,7 @@ export default function TeamDetailPage({ params }: { params: Promise<{ id: strin
   };
 
   return (
-    <div>
+    <div className="container mx-auto px-4 py-8">
       <div className="bg-white shadow-md rounded-lg p-6 mb-6">
         <h1 className="text-3xl font-bold mb-2">{team.name}</h1>
         
@@ -238,8 +238,8 @@ export default function TeamDetailPage({ params }: { params: Promise<{ id: strin
                   <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-green-800"></div>
                 </div>
               ) : sortedPlayers && sortedPlayers.length > 0 ? (
-                <div className="overflow-x-auto">
-                  <table className="min-w-full bg-white">
+                <div className="bg-white shadow-md rounded-lg overflow-hidden">
+                  <table className="w-full bg-white">
                     <thead>
                       <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
                         <th 

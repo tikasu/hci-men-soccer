@@ -152,13 +152,13 @@ export default function AdminStandingsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">League Standings</h1>
+      <div className="flex justify-between items-center mb-6 bg-green-700 p-4 rounded-lg">
+        <h1 className="text-3xl font-bold text-white">League Standings</h1>
         <div className="flex space-x-2">
           <button
             onClick={handleRecalculateAllStandings}
             disabled={isRecalculating || isEditingRanks}
-            className="bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
+            className="bg-white text-green-700 hover:bg-gray-100 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50 text-base"
           >
             {isRecalculating ? 'Recalculating...' : 'Recalculate All Standings'}
           </button>
@@ -166,13 +166,13 @@ export default function AdminStandingsPage() {
             <>
               <button
                 onClick={handleSaveManualRanks}
-                className="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                className="bg-white text-blue-700 hover:bg-gray-100 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-base"
               >
                 Save Manual Rankings
               </button>
               <button
                 onClick={handleCancelEditRanks}
-                className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                className="bg-white text-gray-700 hover:bg-gray-100 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-base"
               >
                 Cancel
               </button>
@@ -181,7 +181,7 @@ export default function AdminStandingsPage() {
             <button
               onClick={handleToggleEditRanks}
               disabled={isRecalculating}
-              className="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
+              className="bg-white text-blue-700 hover:bg-gray-100 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50 text-base"
             >
               Edit Manual Rankings
             </button>

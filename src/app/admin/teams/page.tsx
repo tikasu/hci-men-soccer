@@ -136,14 +136,14 @@ export default function AdminTeamsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">Manage Teams</h1>
+      <div className="flex justify-between items-center mb-6 bg-green-700 p-4 rounded-lg">
+        <h1 className="text-3xl font-bold text-white">Manage Teams</h1>
         <button
           onClick={() => {
             resetForm();
             setIsAddingTeam(true);
           }}
-          className="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800 text-base"
+          className="bg-white text-green-700 px-4 py-2 rounded-md hover:bg-gray-100 text-base font-medium"
         >
           Add New Team
         </button>

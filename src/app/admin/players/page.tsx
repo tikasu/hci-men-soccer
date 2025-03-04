@@ -263,7 +263,9 @@ export default function AdminPlayersPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6 text-gray-900">Manage Players</h1>
+      <div className="bg-green-700 p-4 rounded-lg mb-6">
+        <h1 className="text-3xl font-bold text-white">Manage Players</h1>
+      </div>
 
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">

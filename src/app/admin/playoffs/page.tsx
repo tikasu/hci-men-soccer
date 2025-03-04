@@ -190,11 +190,11 @@ export default function PlayoffManagementPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-full">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Playoff Management</h1>
+      <div className="flex justify-between items-center mb-6 bg-green-700 p-4 rounded-lg">
+        <h1 className="text-3xl font-bold text-white">Playoff Management</h1>
         <Link 
           href="/admin" 
-          className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-md"
+          className="bg-white hover:bg-gray-100 text-green-700 px-4 py-2 rounded-md text-base font-medium"
         >
           Back to Dashboard
         </Link>

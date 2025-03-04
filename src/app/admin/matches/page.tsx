@@ -673,8 +673,8 @@ export default function AdminMatchesPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">Manage Matches</h1>
+      <div className="flex justify-between items-center mb-6 bg-green-700 p-4 rounded-lg">
+        <h1 className="text-3xl font-bold text-white">Manage Matches</h1>
         <div className="flex space-x-2">
         <button
           onClick={() => {
@@ -682,7 +682,7 @@ export default function AdminMatchesPage() {
             setIsAddingMatch(true);
               setIsBatchMode(false);
           }}
-          className="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800 text-base"
+          className="bg-white text-green-700 px-4 py-2 rounded-md hover:bg-gray-100 text-base font-medium"
         >
             Add Single Match
           </button>
@@ -692,7 +692,7 @@ export default function AdminMatchesPage() {
               setIsAddingMatch(true);
               setIsBatchMode(true);
             }}
-            className="bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800 text-base"
+            className="bg-white text-blue-700 px-4 py-2 rounded-md hover:bg-gray-100 text-base font-medium"
           >
             Add Multiple Matches
         </button>

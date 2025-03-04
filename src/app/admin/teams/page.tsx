@@ -137,7 +137,7 @@ export default function AdminTeamsPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Manage Teams</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Manage Teams</h1>
         <button
           onClick={() => {
             resetForm();
@@ -151,22 +151,22 @@ export default function AdminTeamsPage() {
 
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-          <span className="block sm:inline">{error}</span>
+          <span className="block sm:inline text-base">{error}</span>
         </div>
       )}
 
       {success && (
         <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-          <span className="block sm:inline">{success}</span>
+          <span className="block sm:inline text-base">{success}</span>
         </div>
       )}
 
       {(isAddingTeam || isEditingTeam) && (
         <div className="bg-white shadow-md rounded-lg p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4">{isAddingTeam ? 'Add New Team' : 'Edit Team'}</h2>
+          <h2 className="text-xl font-semibold mb-4 text-gray-900">{isAddingTeam ? 'Add New Team' : 'Edit Team'}</h2>
           <form onSubmit={isAddingTeam ? handleAddTeam : handleEditTeam}>
             <div className="mb-4">
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="name" className="block text-base font-medium text-gray-900 mb-1">
                 Team Name*
               </label>
               <input
@@ -180,7 +180,7 @@ export default function AdminTeamsPage() {
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="logo" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="logo" className="block text-base font-medium text-gray-900 mb-1">
                 Logo URL
               </label>
               <input
@@ -193,7 +193,7 @@ export default function AdminTeamsPage() {
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="description" className="block text-base font-medium text-gray-900 mb-1">
                 Description
               </label>
               <textarea
@@ -209,13 +209,13 @@ export default function AdminTeamsPage() {
               <button
                 type="button"
                 onClick={resetForm}
-                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-base font-medium text-gray-700 bg-white hover:bg-gray-50"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-700 hover:bg-green-800"
+                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-green-700 hover:bg-green-800"
               >
                 {isAddingTeam ? 'Add Team' : 'Update Team'}
               </button>
@@ -228,13 +228,13 @@ export default function AdminTeamsPage() {
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white">
             <thead>
-              <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
+              <tr className="bg-gray-100 text-gray-800 uppercase text-sm leading-normal">
                 <th className="py-3 px-6 text-left">Team Name</th>
                 <th className="py-3 px-6 text-left">Description</th>
                 <th className="py-3 px-6 text-center">Actions</th>
               </tr>
             </thead>
-            <tbody className="text-gray-600 text-sm">
+            <tbody className="text-gray-700 text-base">
               {isLoadingTeams ? (
                 <tr>
                   <td colSpan={3} className="py-4 text-center">

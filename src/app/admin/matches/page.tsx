@@ -674,7 +674,7 @@ export default function AdminMatchesPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Manage Matches</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Manage Matches</h1>
         <div className="flex space-x-2">
         <button
           onClick={() => {
@@ -701,23 +701,23 @@ export default function AdminMatchesPage() {
 
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-          <span className="block sm:inline">{error}</span>
+          <span className="block sm:inline text-base">{error}</span>
         </div>
       )}
 
       {success && (
         <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-          <span className="block sm:inline">{success}</span>
+          <span className="block sm:inline text-base">{success}</span>
         </div>
       )}
 
       {isAddingMatch && !isBatchMode && !isEditingMatch && (
         <div className="bg-white shadow-md rounded-lg p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4">Add New Match</h2>
+          <h2 className="text-xl font-semibold mb-4 text-gray-900">Add New Match</h2>
           <form onSubmit={handleAddMatch}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
-                <label htmlFor="homeTeamId" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="homeTeamId" className="block text-base font-medium text-gray-900 mb-1">
                   Home Team*
                 </label>
                 <select
@@ -737,7 +737,7 @@ export default function AdminMatchesPage() {
                 </select>
               </div>
               <div>
-                <label htmlFor="awayTeamId" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="awayTeamId" className="block text-base font-medium text-gray-900 mb-1">
                   Away Team*
                 </label>
                 <select
@@ -757,7 +757,7 @@ export default function AdminMatchesPage() {
                 </select>
               </div>
               <div>
-                <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="date" className="block text-base font-medium text-gray-900 mb-1">
                   Date*
                 </label>
                 <input
@@ -771,7 +771,7 @@ export default function AdminMatchesPage() {
                 />
               </div>
               <div>
-                <label htmlFor="time" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="time" className="block text-base font-medium text-gray-900 mb-1">
                   Time
                 </label>
                 <input
@@ -784,7 +784,7 @@ export default function AdminMatchesPage() {
                 />
               </div>
               <div>
-                <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="location" className="block text-base font-medium text-gray-900 mb-1">
                   Location
                 </label>
                 <input
@@ -806,7 +806,7 @@ export default function AdminMatchesPage() {
                   onChange={handleInputChange}
                   className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
                 />
-                <label htmlFor="isCompleted" className="ml-2 block text-sm text-gray-900">
+                <label htmlFor="isCompleted" className="ml-2 block text-base text-gray-900">
                   Match Completed
                 </label>
               </div>
@@ -817,7 +817,7 @@ export default function AdminMatchesPage() {
                 <h3 className="text-lg font-medium mb-2">Match Result</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div>
-                    <label htmlFor="homeScore" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="homeScore" className="block text-base font-medium text-gray-900 mb-1">
                       Home Team Score*
                     </label>
                     <input
@@ -832,7 +832,7 @@ export default function AdminMatchesPage() {
                     />
                   </div>
                   <div>
-                    <label htmlFor="awayScore" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="awayScore" className="block text-base font-medium text-gray-900 mb-1">
                       Away Team Score*
                     </label>
                     <input

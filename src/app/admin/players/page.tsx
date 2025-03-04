@@ -263,17 +263,17 @@ export default function AdminPlayersPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Manage Players</h1>
+      <h1 className="text-3xl font-bold mb-6 text-gray-900">Manage Players</h1>
 
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-          <span className="block sm:inline">{error}</span>
+          <span className="block sm:inline text-base">{error}</span>
         </div>
       )}
 
       {success && (
         <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-          <span className="block sm:inline">{success}</span>
+          <span className="block sm:inline text-base">{success}</span>
         </div>
       )}
 
@@ -281,8 +281,8 @@ export default function AdminPlayersPage() {
       <div className="bg-white shadow-md rounded-lg p-6 mb-6">
         <div className="flex justify-between items-center">
           <div>
-            <h2 className="text-xl font-semibold">Player Pool</h2>
-            <p className="text-gray-600 text-sm mt-1">
+            <h2 className="text-xl font-semibold text-gray-900">Player Pool</h2>
+            <p className="text-gray-700 text-base mt-1">
               Access the database of all players who have participated in previous seasons (Fall 2024, Winter 2025)
             </p>
           </div>
@@ -297,7 +297,7 @@ export default function AdminPlayersPage() {
 
       <div className="bg-white shadow-md rounded-lg p-6 mb-6">
         <div className="mb-4">
-          <label htmlFor="team" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="team" className="block text-base font-medium text-gray-900 mb-1">
             Select Team
           </label>
           <select
@@ -355,11 +355,11 @@ export default function AdminPlayersPage() {
 
       {(isAddingPlayer || isEditingPlayer) && (
         <div className="bg-white shadow-md rounded-lg p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4">{isAddingPlayer ? 'Add New Player' : 'Edit Player'}</h2>
+          <h2 className="text-xl font-semibold mb-4 text-gray-900">{isAddingPlayer ? 'Add New Player' : 'Edit Player'}</h2>
           <form onSubmit={isAddingPlayer ? handleAddPlayer : handleEditPlayer}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="name" className="block text-base font-medium text-gray-900 mb-1">
                   Player Name*
                 </label>
                 <input
@@ -373,7 +373,7 @@ export default function AdminPlayersPage() {
                 />
               </div>
               <div>
-                <label htmlFor="position" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="position" className="block text-base font-medium text-gray-900 mb-1">
                   Position*
                 </label>
                 <select
@@ -390,7 +390,7 @@ export default function AdminPlayersPage() {
                 </select>
               </div>
               <div>
-                <label htmlFor="number" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="number" className="block text-base font-medium text-gray-900 mb-1">
                   Jersey Number
                 </label>
                 <input
@@ -404,10 +404,10 @@ export default function AdminPlayersPage() {
               </div>
             </div>
 
-            <h3 className="text-lg font-medium mb-2">Player Statistics</h3>
+            <h3 className="text-lg font-medium mb-2 text-gray-900">Player Statistics</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <div>
-                <label htmlFor="stats.goals" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="stats.goals" className="block text-base font-medium text-gray-900 mb-1">
                   Goals
                 </label>
                 <input
@@ -421,7 +421,7 @@ export default function AdminPlayersPage() {
                 />
               </div>
               <div>
-                <label htmlFor="stats.assists" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="stats.assists" className="block text-base font-medium text-gray-900 mb-1">
                   Assists
                 </label>
                 <input
@@ -435,7 +435,7 @@ export default function AdminPlayersPage() {
                 />
               </div>
               <div>
-                <label htmlFor="stats.gamesPlayed" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="stats.gamesPlayed" className="block text-base font-medium text-gray-900 mb-1">
                   Games Played
                 </label>
                 <input
@@ -449,7 +449,7 @@ export default function AdminPlayersPage() {
                 />
               </div>
               <div>
-                <label htmlFor="stats.yellowCards" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="stats.yellowCards" className="block text-base font-medium text-gray-900 mb-1">
                   Yellow Cards
                 </label>
                 <input
@@ -463,7 +463,7 @@ export default function AdminPlayersPage() {
                 />
               </div>
               <div>
-                <label htmlFor="stats.redCards" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="stats.redCards" className="block text-base font-medium text-gray-900 mb-1">
                   Red Cards
                 </label>
                 <input

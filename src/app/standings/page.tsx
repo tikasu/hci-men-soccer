@@ -100,7 +100,7 @@ export default function StandingsPage() {
       {/* Season Selector */}
       <div className="mb-6 flex justify-center">
         <div className="inline-block relative w-64 sm:w-72">
-          <label htmlFor="season-select" className="block text-base sm:text-sm font-medium text-gray-800 mb-2 text-center">
+          <label htmlFor="season-select" className="block text-base font-medium text-gray-900 mb-2 text-center">
             Select Season
           </label>
           <select

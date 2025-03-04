@@ -103,17 +103,17 @@ export default function AdminUsersPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Manage Users</h1>
+      <h1 className="text-3xl font-bold mb-6 text-gray-900">Manage Users</h1>
 
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-          <span className="block sm:inline">{error}</span>
+          <span className="block sm:inline text-base">{error}</span>
         </div>
       )}
 
       {success && (
         <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-          <span className="block sm:inline">{success}</span>
+          <span className="block sm:inline text-base">{success}</span>
         </div>
       )}
 
@@ -121,7 +121,7 @@ export default function AdminUsersPage() {
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white">
             <thead>
-              <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
+              <tr className="bg-gray-100 text-gray-800 uppercase text-sm leading-normal">
                 <th className="py-3 px-6 text-left">Email</th>
                 <th className="py-3 px-6 text-left">Name</th>
                 <th className="py-3 px-6 text-center">Role</th>
@@ -129,7 +129,7 @@ export default function AdminUsersPage() {
                 <th className="py-3 px-6 text-center">Actions</th>
               </tr>
             </thead>
-            <tbody className="text-gray-600 text-sm">
+            <tbody className="text-gray-700 text-base">
               {isLoadingUsers ? (
                 <tr>
                   <td colSpan={4} className="py-4 text-center">

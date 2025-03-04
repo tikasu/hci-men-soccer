@@ -99,24 +99,24 @@ export default function StandingsPage() {
       
       {/* Season Selector */}
       <div className="mb-6 flex justify-center">
-        <div className="inline-block relative w-64">
-          <label htmlFor="season-select" className="block text-sm font-medium text-gray-700 mb-1">
+        <div className="inline-block relative w-64 sm:w-72">
+          <label htmlFor="season-select" className="block text-base sm:text-sm font-medium text-gray-800 mb-2">
             Select Season
           </label>
           <select
             id="season-select"
             value={selectedSeason}
             onChange={(e) => setSelectedSeason(e.target.value)}
-            className="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-400 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            className="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-400 px-4 py-3 sm:py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-base sm:text-sm text-gray-900"
           >
             {availableSeasons.map((season) => (
-              <option key={season} value={season}>
+              <option key={season} value={season} className="text-base sm:text-sm">
                 {season} {season === currentSeason ? '(Current)' : ''}
               </option>
             ))}
           </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 top-6">
-            <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 top-8 sm:top-6">
+            <svg className="fill-current h-5 w-5 sm:h-4 sm:w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
               <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
             </svg>
           </div>
@@ -295,7 +295,7 @@ export default function StandingsPage() {
 
       <div className="mt-8 bg-gray-50 p-6 rounded-lg border border-gray-200">
         <h2 className="text-xl font-semibold mb-3">League Information - {selectedSeason}</h2>
-        <p className="text-gray-700 mb-4">
+        <p className="text-gray-800 text-base sm:text-sm mb-4">
           The standings table shows each team's performance in the {selectedSeason} season, including games played, 
           results, goals, and total points. Teams are ranked by total points, with goal difference 
           as the first tiebreaker.
@@ -303,7 +303,7 @@ export default function StandingsPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-white p-4 rounded shadow-sm">
             <h3 className="font-medium text-green-700 mb-2">Points System</h3>
-            <ul className="list-disc pl-5 text-gray-700">
+            <ul className="list-disc pl-5 text-gray-800 text-base sm:text-sm">
               <li className="mb-1">Win: 3 points</li>
               <li className="mb-1">Draw: 1 point</li>
               <li className="mb-1">Loss: 0 points</li>
@@ -311,7 +311,7 @@ export default function StandingsPage() {
           </div>
           <div className="bg-white p-4 rounded shadow-sm">
             <h3 className="font-medium text-green-700 mb-2">Key</h3>
-            <ul className="space-y-1 text-gray-700">
+            <ul className="space-y-1 text-gray-800 text-base sm:text-sm">
               <li><span className="font-medium">GF</span>: Goals For</li>
               <li><span className="font-medium">GA</span>: Goals Against</li>
               <li><span className="font-medium">GD</span>: Goal Difference</li>
@@ -319,7 +319,7 @@ export default function StandingsPage() {
           </div>
           <div className="bg-white p-4 rounded shadow-sm">
             <h3 className="font-medium text-green-700 mb-2">Top Teams</h3>
-            <p className="text-gray-700">
+            <p className="text-gray-800 text-base sm:text-sm">
               The top 8 teams (highlighted in green) qualify for the championship playoffs at the end of the season.
             </p>
           </div>

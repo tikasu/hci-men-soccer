@@ -134,7 +134,7 @@ export default function AdminSettingsPage() {
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
-              <label htmlFor="leagueName" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="leagueName" className="block text-base sm:text-sm font-medium text-gray-800 mb-2">
                 League Name
               </label>
               <input
@@ -143,12 +143,12 @@ export default function AdminSettingsPage() {
                 name="leagueName"
                 value={settings.leagueName}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 text-base sm:text-sm"
                 required
               />
             </div>
             <div>
-              <label htmlFor="currentSeason" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="currentSeason" className="block text-base sm:text-sm font-medium text-gray-800 mb-2">
                 Current Season
               </label>
               <input
@@ -157,18 +157,18 @@ export default function AdminSettingsPage() {
                 name="currentSeason"
                 value={settings.currentSeason}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 text-base sm:text-sm"
                 placeholder="e.g. Winter 2025"
                 required
               />
-              <p className="text-xs text-gray-500 mt-1">Use format: [Season] [Year] (e.g. Fall 2024, Winter 2025, Spring 2025)</p>
+              <p className="text-sm text-gray-700 mt-2">Use format: [Season] [Year] (e.g. Fall 2024, Winter 2025, Spring 2025)</p>
             </div>
           </div>
 
           <h2 className="text-xl font-semibold mb-4">Points System</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <div>
-              <label htmlFor="pointsForWin" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="pointsForWin" className="block text-base sm:text-sm font-medium text-gray-800 mb-2">
                 Points for Win
               </label>
               <input
@@ -178,12 +178,12 @@ export default function AdminSettingsPage() {
                 value={settings.pointsForWin}
                 onChange={handleInputChange}
                 min="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 text-base sm:text-sm"
                 required
               />
             </div>
             <div>
-              <label htmlFor="pointsForDraw" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="pointsForDraw" className="block text-base sm:text-sm font-medium text-gray-800 mb-2">
                 Points for Draw
               </label>
               <input
@@ -193,12 +193,12 @@ export default function AdminSettingsPage() {
                 value={settings.pointsForDraw}
                 onChange={handleInputChange}
                 min="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 text-base sm:text-sm"
                 required
               />
             </div>
             <div>
-              <label htmlFor="pointsForLoss" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="pointsForLoss" className="block text-base sm:text-sm font-medium text-gray-800 mb-2">
                 Points for Loss
               </label>
               <input
@@ -208,7 +208,7 @@ export default function AdminSettingsPage() {
                 value={settings.pointsForLoss}
                 onChange={handleInputChange}
                 min="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 text-base sm:text-sm"
                 required
               />
             </div>
@@ -217,7 +217,7 @@ export default function AdminSettingsPage() {
           <h2 className="text-xl font-semibold mb-4">User Management</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
-              <label htmlFor="maxAdminUsers" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="maxAdminUsers" className="block text-base sm:text-sm font-medium text-gray-800 mb-2">
                 Maximum Admin Users
               </label>
               <input
@@ -228,15 +228,15 @@ export default function AdminSettingsPage() {
                 onChange={handleInputChange}
                 min="1"
                 max="20"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 text-base sm:text-sm"
                 required
               />
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-2 text-sm text-gray-700">
                 Limit the number of admin users allowed in the system.
               </p>
             </div>
             <div>
-              <label htmlFor="adminSecretCode" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="adminSecretCode" className="block text-base sm:text-sm font-medium text-gray-800 mb-2">
                 Admin Secret Code
               </label>
               <input
@@ -245,10 +245,10 @@ export default function AdminSettingsPage() {
                 name="adminSecretCode"
                 value={settings.adminSecretCode}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 text-base sm:text-sm"
                 required
               />
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-2 text-sm text-gray-700">
                 Secret code required to become an admin. Change this regularly for security.
               </p>
             </div>
@@ -262,13 +262,13 @@ export default function AdminSettingsPage() {
                 name="signupEnabled"
                 checked={settings.signupEnabled}
                 onChange={handleInputChange}
-                className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                className="h-5 w-5 sm:h-4 sm:w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
               />
-              <label htmlFor="signupEnabled" className="ml-2 block text-sm text-gray-700">
+              <label htmlFor="signupEnabled" className="ml-2 block text-base sm:text-sm text-gray-800">
                 Enable User Signup
               </label>
             </div>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-2 text-sm text-gray-700">
               When disabled, new users cannot create accounts. Existing users can still log in.
             </p>
           </div>
@@ -282,9 +282,9 @@ export default function AdminSettingsPage() {
                 name="enableAIInsights"
                 checked={settings.enableAIInsights}
                 onChange={handleInputChange}
-                className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                className="h-5 w-5 sm:h-4 sm:w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
               />
-              <label htmlFor="enableAIInsights" className="ml-2 block text-sm text-gray-700">
+              <label htmlFor="enableAIInsights" className="ml-2 block text-base sm:text-sm text-gray-800">
                 Enable AI Insights
               </label>
             </div>
@@ -292,11 +292,11 @@ export default function AdminSettingsPage() {
             {!hasOpenAIKey && (
               <div className="mt-2 bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative" role="alert">
                 <strong className="font-bold">Warning:</strong>
-                <span className="block sm:inline"> OpenAI API key is not set. AI insights will not work until you add an API key to your .env.local file.</span>
+                <span className="block sm:inline text-base sm:text-sm"> OpenAI API key is not set. AI insights will not work until you add an API key to your .env.local file.</span>
               </div>
             )}
             
-            <p className="mt-2 text-sm text-gray-500">
+            <p className="mt-2 text-sm text-gray-700">
               When enabled, the system will use AI to generate insights about teams, players, and matches.
             </p>
           </div>
@@ -304,7 +304,7 @@ export default function AdminSettingsPage() {
           <div className="flex justify-end">
             <button
               type="submit"
-              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-700 hover:bg-green-800"
+              className="px-4 py-3 sm:py-2 border border-transparent rounded-md shadow-sm text-base sm:text-sm font-medium text-white bg-green-700 hover:bg-green-800"
             >
               Save Settings
             </button>
@@ -314,21 +314,21 @@ export default function AdminSettingsPage() {
 
       <div className="bg-white shadow-md rounded-lg p-6 mb-6">
         <h2 className="text-xl font-semibold mb-4">Season Management</h2>
-        <p className="text-gray-700 mb-4">
+        <p className="text-gray-800 text-base sm:text-sm mb-4">
           Use these tools to manage season transitions. Make sure to update the Current Season setting above before using these tools.
         </p>
         
         <div className="space-y-4">
           <div>
             <h3 className="text-lg font-medium mb-2">Update Standings with Current Season</h3>
-            <p className="text-sm text-gray-600 mb-2">
+            <p className="text-base sm:text-sm text-gray-800 mb-3">
               This will update all existing standings with the current season value: <strong>{settings?.currentSeason}</strong>
             </p>
             <button
               type="button"
               onClick={handleUpdateAllStandings}
               disabled={updateAllStandingsMutation.isPending}
-              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300"
+              className="px-4 py-3 sm:py-2 border border-transparent rounded-md shadow-sm text-base sm:text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300"
             >
               {updateAllStandingsMutation.isPending ? 'Updating...' : 'Update All Standings'}
             </button>

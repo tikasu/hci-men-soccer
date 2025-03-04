@@ -25,14 +25,14 @@ export default function AdminPage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-6 text-gray-900">Admin Dashboard</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Teams Management */}
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
           <div className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Teams Management</h2>
-            <p className="text-gray-600 mb-4">Add, edit, or remove teams from the league.</p>
+            <h2 className="text-xl font-semibold mb-4 text-gray-900">Teams Management</h2>
+            <p className="text-gray-700 mb-4 text-base">Add, edit, or remove teams from the league.</p>
             <Link 
               href="/admin/teams" 
               className="inline-block bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800"
@@ -45,8 +45,8 @@ export default function AdminPage() {
         {/* Players Management */}
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
           <div className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Players Management</h2>
-            <p className="text-gray-600 mb-4">Add, edit, or remove players and update their statistics.</p>
+            <h2 className="text-xl font-semibold mb-4 text-gray-900">Players Management</h2>
+            <p className="text-gray-700 mb-4 text-base">Add, edit, or remove players and update their statistics.</p>
             <Link 
               href="/admin/players" 
               className="inline-block bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800"
@@ -59,8 +59,8 @@ export default function AdminPage() {
         {/* Matches Management */}
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
           <div className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Matches Management</h2>
-            <p className="text-gray-600 mb-4">Schedule new matches, update scores, and manage the league calendar.</p>
+            <h2 className="text-xl font-semibold mb-4 text-gray-900">Matches Management</h2>
+            <p className="text-gray-700 mb-4 text-base">Schedule new matches, update scores, and manage the league calendar.</p>
             <Link 
               href="/admin/matches" 
               className="inline-block bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800"
@@ -73,8 +73,8 @@ export default function AdminPage() {
         {/* Playoff Management */}
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
           <div className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Playoff Management</h2>
-            <p className="text-gray-600 mb-4">Set up and manage the playoff bracket and schedule.</p>
+            <h2 className="text-xl font-semibold mb-4 text-gray-900">Playoff Management</h2>
+            <p className="text-gray-700 mb-4 text-base">Set up and manage the playoff bracket and schedule.</p>
             <Link 
               href="/admin/playoffs" 
               className="inline-block bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800"
@@ -87,8 +87,8 @@ export default function AdminPage() {
         {/* Standings */}
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
           <div className="p-6">
-            <h2 className="text-xl font-semibold mb-4">League Standings</h2>
-            <p className="text-gray-600 mb-4">View and monitor the current league standings table.</p>
+            <h2 className="text-xl font-semibold mb-4 text-gray-900">League Standings</h2>
+            <p className="text-gray-700 mb-4 text-base">View and monitor the current league standings table.</p>
             <Link 
               href="/admin/standings" 
               className="inline-block bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800"
@@ -101,8 +101,8 @@ export default function AdminPage() {
         {/* AI Insights */}
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
           <div className="p-6">
-            <h2 className="text-xl font-semibold mb-4">AI Insights</h2>
-            <p className="text-gray-600 mb-4">Generate and manage AI-powered insights for teams, players, and matches.</p>
+            <h2 className="text-xl font-semibold mb-4 text-gray-900">AI Insights</h2>
+            <p className="text-gray-700 mb-4 text-base">Generate and manage AI-powered insights for teams, players, and matches.</p>
             <Link 
               href="/admin/insights" 
               className="inline-block bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800"
@@ -115,8 +115,8 @@ export default function AdminPage() {
         {/* User Management */}
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
           <div className="p-6">
-            <h2 className="text-xl font-semibold mb-4">User Management</h2>
-            <p className="text-gray-600 mb-4">Manage user accounts and permissions.</p>
+            <h2 className="text-xl font-semibold mb-4 text-gray-900">User Management</h2>
+            <p className="text-gray-700 mb-4 text-base">Manage user accounts and permissions.</p>
             <Link 
               href="/admin/users" 
               className="inline-block bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800"
@@ -129,8 +129,8 @@ export default function AdminPage() {
         {/* Settings */}
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
           <div className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Settings</h2>
-            <p className="text-gray-600 mb-4">Configure league settings and preferences.</p>
+            <h2 className="text-xl font-semibold mb-4 text-gray-900">Settings</h2>
+            <p className="text-gray-700 mb-4 text-base">Configure league settings and preferences.</p>
             <Link 
               href="/admin/settings" 
               className="inline-block bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800"

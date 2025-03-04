@@ -100,7 +100,7 @@ export default function StandingsPage() {
       {/* Season Selector */}
       <div className="mb-6 flex justify-center">
         <div className="inline-block relative w-64 sm:w-72">
-          <label htmlFor="season-select" className="block text-base sm:text-sm font-medium text-gray-800 mb-2">
+          <label htmlFor="season-select" className="block text-base sm:text-sm font-medium text-gray-800 mb-2 text-center">
             Select Season
           </label>
           <select
@@ -294,32 +294,32 @@ export default function StandingsPage() {
       </div>
 
       <div className="mt-8 bg-gray-50 p-6 rounded-lg border border-gray-200">
-        <h2 className="text-xl font-semibold mb-3">League Information - {selectedSeason}</h2>
-        <p className="text-gray-800 text-base sm:text-sm mb-4">
+        <h2 className="text-xl font-semibold mb-3 text-gray-900">League Information - {selectedSeason}</h2>
+        <p className="text-gray-800 text-base mb-4">
           The standings table shows each team's performance in the {selectedSeason} season, including games played, 
           results, goals, and total points. Teams are ranked by total points, with goal difference 
           as the first tiebreaker.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-white p-4 rounded shadow-sm">
-            <h3 className="font-medium text-green-700 mb-2">Points System</h3>
-            <ul className="list-disc pl-5 text-gray-800 text-base sm:text-sm">
+            <h3 className="font-medium text-green-700 mb-2 text-base">Points System</h3>
+            <ul className="list-disc pl-5 text-gray-800 text-base">
               <li className="mb-1">Win: 3 points</li>
               <li className="mb-1">Draw: 1 point</li>
               <li className="mb-1">Loss: 0 points</li>
             </ul>
           </div>
           <div className="bg-white p-4 rounded shadow-sm">
-            <h3 className="font-medium text-green-700 mb-2">Key</h3>
-            <ul className="space-y-1 text-gray-800 text-base sm:text-sm">
+            <h3 className="font-medium text-green-700 mb-2 text-base">Key</h3>
+            <ul className="space-y-1 text-gray-800 text-base">
               <li><span className="font-medium">GF</span>: Goals For</li>
               <li><span className="font-medium">GA</span>: Goals Against</li>
               <li><span className="font-medium">GD</span>: Goal Difference</li>
             </ul>
           </div>
           <div className="bg-white p-4 rounded shadow-sm">
-            <h3 className="font-medium text-green-700 mb-2">Top Teams</h3>
-            <p className="text-gray-800 text-base sm:text-sm">
+            <h3 className="font-medium text-green-700 mb-2 text-base">Top Teams</h3>
+            <p className="text-gray-800 text-base">
               The top 8 teams (highlighted in green) qualify for the championship playoffs at the end of the season.
             </p>
           </div>

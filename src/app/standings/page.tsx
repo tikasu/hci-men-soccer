@@ -107,10 +107,10 @@ export default function StandingsPage() {
             id="season-select"
             value={selectedSeason}
             onChange={(e) => setSelectedSeason(e.target.value)}
-            className="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-400 px-4 py-3 sm:py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-base sm:text-sm text-gray-900"
+            className="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-400 px-4 py-3 sm:py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-base text-gray-900"
           >
             {availableSeasons.map((season) => (
-              <option key={season} value={season} className="text-base sm:text-sm">
+              <option key={season} value={season} className="text-base">
                 {season} {season === currentSeason ? '(Current)' : ''}
               </option>
             ))}
@@ -292,6 +292,37 @@ export default function StandingsPage() {
           </table>
         </div>
       </div>
+
+      {/* Season Champion Section - Only show for past seasons */}
+      {selectedSeason !== currentSeason && standings && standings.length > 0 && (
+        <div className="mb-8 bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-lg p-6 border border-yellow-200 shadow-sm">
+          <div className="flex flex-col md:flex-row items-center justify-between">
+            <div className="flex items-center mb-4 md:mb-0">
+              <div className="mr-4">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-yellow-500" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M5 3h14a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-2v3a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4v-3H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm13 2h-4v10a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V5zm-6 0H6v10a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V5zM3 5v3h2V5H3zm16 0v3h2V5h-2zM9 18v1a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-1h-6z" />
+                </svg>
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">{selectedSeason} Champion</h2>
+                <p className="text-gray-700 text-base">Congratulations to our league champions!</p>
+              </div>
+            </div>
+            <div className="bg-white rounded-lg p-4 shadow-sm border border-yellow-200 flex items-center">
+              <div className="mr-3">
+                <div className="h-10 w-10 bg-green-700 rounded-full flex items-center justify-center text-white font-bold text-lg">1</div>
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-gray-900">{standings[0]?.teamName}</h3>
+                <div className="text-sm text-gray-700">
+                  <span className="font-medium">{standings[0]?.points} points</span> • 
+                  <span className="ml-1">{standings[0]?.won}W {standings[0]?.drawn}D {standings[0]?.lost}L</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="mt-8 bg-gray-50 p-6 rounded-lg border border-gray-200">
         <h2 className="text-xl font-semibold mb-3 text-gray-900">League Information - {selectedSeason}</h2>

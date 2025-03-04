@@ -143,7 +143,7 @@ export default function AdminTeamsPage() {
             resetForm();
             setIsAddingTeam(true);
           }}
-          className="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800"
+          className="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800 text-base"
         >
           Add New Team
         </button>

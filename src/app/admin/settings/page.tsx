@@ -262,7 +262,7 @@ export default function AdminSettingsPage() {
                 name="signupEnabled"
                 checked={settings.signupEnabled}
                 onChange={handleInputChange}
-                className="h-5 w-5 sm:h-4 sm:w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                className="h-5 w-5 text-green-600 focus:ring-green-500 border-gray-300 rounded"
               />
               <label htmlFor="signupEnabled" className="ml-2 block text-base font-medium text-gray-900">
                 Enable User Signup
@@ -282,7 +282,7 @@ export default function AdminSettingsPage() {
                 name="enableAIInsights"
                 checked={settings.enableAIInsights}
                 onChange={handleInputChange}
-                className="h-5 w-5 sm:h-4 sm:w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                className="h-5 w-5 text-green-600 focus:ring-green-500 border-gray-300 rounded"
               />
               <label htmlFor="enableAIInsights" className="ml-2 block text-base font-medium text-gray-900">
                 Enable AI Insights
@@ -304,7 +304,7 @@ export default function AdminSettingsPage() {
           <div className="flex justify-end">
             <button
               type="submit"
-              className="px-4 py-3 sm:py-2 border border-transparent rounded-md shadow-sm text-base sm:text-sm font-medium text-white bg-green-700 hover:bg-green-800"
+              className="px-4 py-3 sm:py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-green-700 hover:bg-green-800"
             >
               Save Settings
             </button>
@@ -328,7 +328,7 @@ export default function AdminSettingsPage() {
               type="button"
               onClick={handleUpdateAllStandings}
               disabled={updateAllStandingsMutation.isPending}
-              className="px-4 py-3 sm:py-2 border border-transparent rounded-md shadow-sm text-base sm:text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300"
+              className="px-4 py-3 sm:py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300"
             >
               {updateAllStandingsMutation.isPending ? 'Updating...' : 'Update All Standings'}
             </button>

@@ -682,7 +682,7 @@ export default function AdminMatchesPage() {
             setIsAddingMatch(true);
               setIsBatchMode(false);
           }}
-          className="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800"
+          className="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800 text-base"
         >
             Add Single Match
           </button>
@@ -692,7 +692,7 @@ export default function AdminMatchesPage() {
               setIsAddingMatch(true);
               setIsBatchMode(true);
             }}
-            className="bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800"
+            className="bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800 text-base"
           >
             Add Multiple Matches
         </button>

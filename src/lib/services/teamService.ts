@@ -31,20 +31,31 @@ export const getAllTeams = async (): Promise<Team[]> => {
 
 // Get a team by ID
 export const getTeamById = async (id: string): Promise<Team | null> => {
+  if (!id) {
+    console.error('Invalid team ID provided:', id);
+    return null;
+  }
+
   try {
+    console.log(`Attempting to fetch team with ID: ${id}`);
     const teamDoc = await getDoc(doc(db, TEAMS_COLLECTION, id));
     
     if (!teamDoc.exists()) {
+      console.error(`Team document does not exist for ID: ${id}`);
       return null;
     }
     
+    const teamData = teamDoc.data();
+    console.log(`Successfully fetched team: ${teamData.name || 'Unknown'} (${id})`);
+    
     return {
       id: teamDoc.id,
-      ...teamDoc.data(),
+      ...teamData,
     } as Team;
   } catch (error) {
-    console.error('Error getting team:', error);
-    return null;
+    console.error(`Error getting team with ID ${id}:`, error);
+    // Rethrow with more context for better debugging
+    throw new Error(`Failed to fetch team with ID ${id}: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 };
 

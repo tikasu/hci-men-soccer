@@ -24,11 +24,32 @@ export function useTeams() {
 export function useTeam(id: string) {
   return useQuery({
     queryKey: ['teams', id],
-    queryFn: () => getTeamById(id),
+    queryFn: async () => {
+      try {
+        console.log(`Fetching team with ID: ${id}`);
+        const team = await getTeamById(id);
+        
+        if (!team) {
+          console.error(`Team not found with ID: ${id}`);
+          throw new Error(`Team not found with ID: ${id}`);
+        }
+        
+        return team;
+      } catch (error) {
+        console.error(`Error fetching team with ID: ${id}`, error);
+        throw error;
+      }
+    },
     enabled: !!id,
     retry: 3,
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
+    retryDelay: (attemptIndex) => {
+      console.log(`Retry attempt ${attemptIndex + 1} for team ID: ${id}`);
+      return Math.min(1000 * 2 ** attemptIndex, 10000);
+    },
     staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
+    refetchOnWindowFocus: false, // Prevent flashing on window focus
+    refetchOnMount: true,
   });
 }
 

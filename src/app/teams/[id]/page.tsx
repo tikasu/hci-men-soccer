@@ -14,8 +14,12 @@ type SortDirection = 'asc' | 'desc';
 
 export default function TeamDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const [teamId, setTeamId] = useState<string>('');
+  const [errorState, setErrorState] = useState<{ message: string; teamId: string } | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const router = useRouter();
   const { isAdmin } = useAuth();
+  
+  // Only enable the query after we have a teamId
   const { data: team, isLoading: isLoadingTeam, error: teamError } = useTeam(teamId);
   const { data: players, isLoading: isLoadingPlayers } = usePlayersByTeamId(teamId);
   const { data: standing } = useStandingByTeamId(teamId);
@@ -41,18 +45,51 @@ export default function TeamDetailPage({ params }: { params: Promise<{ id: strin
   useEffect(() => {
     const loadParams = async () => {
       try {
+        setIsLoading(true);
         const resolvedParams = await params;
         console.log('Resolved team ID:', resolvedParams.id);
         setTeamId(resolvedParams.id);
       } catch (err) {
         console.error('Error resolving params:', err);
+        setErrorState({
+          message: 'Failed to load team ID from URL parameters',
+          teamId: 'Unknown'
+        });
+      } finally {
+        // Keep loading state true until the team query completes
       }
     };
     
     loadParams();
   }, [params]);
 
-  if (isLoadingTeam) {
+  // Handle team loading errors
+  useEffect(() => {
+    if (!isLoadingTeam && teamError) {
+      console.error('Team error:', teamError, 'Team ID:', teamId);
+      setErrorState({
+        message: 'Failed to load team information. Please try again later.',
+        teamId: teamId || 'Not available'
+      });
+    } else if (!isLoadingTeam && !team && teamId) {
+      console.error('No team data found for ID:', teamId);
+      setErrorState({
+        message: 'Team not found. The team may have been deleted or the ID is incorrect.',
+        teamId: teamId
+      });
+    } else if (!isLoadingTeam && team) {
+      // Clear error state if team loads successfully
+      setErrorState(null);
+    }
+    
+    // Update loading state based on team query
+    if (!isLoadingTeam) {
+      setIsLoading(false);
+    }
+  }, [isLoadingTeam, teamError, team, teamId]);
+
+  // If we're in a loading state, show a spinner
+  if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-center items-center h-[50vh]">
@@ -62,14 +99,20 @@ export default function TeamDetailPage({ params }: { params: Promise<{ id: strin
     );
   }
 
-  if (teamError || !team) {
-    console.error('Team error or no team data:', teamError, 'Team ID:', teamId);
+  // If we have an error, show it
+  if (errorState) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 transition-opacity duration-300" role="alert">
           <strong className="font-bold">Error!</strong>
-          <span className="block sm:inline"> Failed to load team information. Please try again later.</span>
-          <p className="mt-2 text-xs">Team ID: {teamId || 'Not available'}</p>
+          <span className="block sm:inline"> {errorState.message}</span>
+          <p className="mt-2 text-xs">Team ID: {errorState.teamId}</p>
+          <button 
+            onClick={() => router.push('/teams')}
+            className="mt-4 bg-red-700 hover:bg-red-800 text-white py-2 px-4 rounded"
+          >
+            Return to Teams List
+          </button>
         </div>
       </div>
     );

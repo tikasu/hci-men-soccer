@@ -51,6 +51,7 @@ export interface Standing {
   points: number;
   manuallyRanked?: boolean;
   manualRank?: number;
+  season?: string;
 }
 
 export interface User {

@@ -166,10 +166,10 @@ export const deleteMatch = async (matchId: string): Promise<void> => {
 };
 
 // Get all standings
-export const getAllStandings = async (): Promise<Standing[]> => {
+export const getAllStandings = async (season?: string): Promise<Standing[]> => {
   try {
-    // Use the new function that handles manual rankings
-    return getAllStandingsWithManualRanking();
+    // Use the new function that handles manual rankings with optional season filtering
+    return getAllStandingsWithManualRanking(season);
   } catch (error) {
     console.error('Error getting standings:', error);
     throw error;
@@ -271,6 +271,7 @@ export const recalculateTeamStandings = async (teamId: string): Promise<void> =>
     const pointsForWin = settings.pointsForWin;
     const pointsForDraw = settings.pointsForDraw;
     const pointsForLoss = settings.pointsForLoss;
+    const currentSeason = settings.currentSeason;
     
     // Create new standing object
     const newStanding: Omit<Standing, 'id'> = {
@@ -282,7 +283,8 @@ export const recalculateTeamStandings = async (teamId: string): Promise<void> =>
       lost: 0,
       goalsFor: 0,
       goalsAgainst: 0,
-      points: 0
+      points: 0,
+      season: currentSeason
     };
     
     // Calculate home match stats
@@ -430,10 +432,22 @@ export const updateTeamManualRanking = async (
 };
 
 // Get all standings with manual ranking applied
-export const getAllStandingsWithManualRanking = async (): Promise<Standing[]> => {
+export const getAllStandingsWithManualRanking = async (season?: string): Promise<Standing[]> => {
   try {
     const standingsCollection = collection(db, 'standings');
-    const standingSnapshot = await getDocs(standingsCollection);
+    
+    // Create query based on whether a season filter is provided
+    let standingsQuery;
+    if (season) {
+      standingsQuery = query(standingsCollection, where('season', '==', season));
+    } else {
+      // If no season is provided, get the current season from settings
+      const settings = await getSettings();
+      const currentSeason = settings.currentSeason;
+      standingsQuery = query(standingsCollection, where('season', '==', currentSeason));
+    }
+    
+    const standingSnapshot = await getDocs(standingsQuery);
     
     // Get all standings
     const standings = standingSnapshot.docs.map(doc => {
@@ -450,6 +464,7 @@ export const getAllStandingsWithManualRanking = async (): Promise<Standing[]> =>
         points: data.points,
         manuallyRanked: data.manuallyRanked,
         manualRank: data.manualRank,
+        season: data.season,
       };
     });
     
@@ -497,6 +512,32 @@ export const getAllStandingsWithManualRanking = async (): Promise<Standing[]> =>
     return sortedStandings;
   } catch (error) {
     console.error('Error getting standings with manual ranking:', error);
+    throw error;
+  }
+};
+
+// Update all existing standings with the current season
+export const updateAllStandingsWithCurrentSeason = async (): Promise<void> => {
+  try {
+    // Get the current season from settings
+    const settings = await getSettings();
+    const currentSeason = settings.currentSeason;
+    
+    // Get all standings
+    const standingsCollection = collection(db, 'standings');
+    const standingSnapshot = await getDocs(standingsCollection);
+    
+    // Update each standing with the current season
+    const updatePromises = standingSnapshot.docs.map(async (doc) => {
+      const standingRef = doc.ref;
+      await updateDoc(standingRef, { season: currentSeason });
+      console.log(`Updated standing ${doc.id} with season ${currentSeason}`);
+    });
+    
+    await Promise.all(updatePromises);
+    console.log(`All standings updated with season ${currentSeason}`);
+  } catch (error) {
+    console.error('Error updating standings with current season:', error);
     throw error;
   }
 }; 

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { getSettings, updateSettings } from '@/lib/services/settingsService';
 import { Settings } from '@/lib/types';
+import { useUpdateAllStandingsWithCurrentSeason } from '@/lib/hooks/useMatches';
 
 export default function AdminSettingsPage() {
   const router = useRouter();
@@ -15,6 +16,7 @@ export default function AdminSettingsPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [hasOpenAIKey, setHasOpenAIKey] = useState(false);
+  const updateAllStandingsMutation = useUpdateAllStandingsWithCurrentSeason();
 
   useEffect(() => {
     if (!loading && (!isAuthenticated || !isAdmin)) {
@@ -82,6 +84,16 @@ export default function AdminSettingsPage() {
     } catch (err) {
       console.error('Failed to update settings:', err);
       setError('Failed to update settings');
+    }
+  };
+
+  const handleUpdateAllStandings = async () => {
+    try {
+      await updateAllStandingsMutation.mutateAsync();
+      setSuccess('All standings updated with the current season!');
+    } catch (err) {
+      console.error('Failed to update standings:', err);
+      setError('Failed to update standings with the current season');
     }
   };
 
@@ -298,6 +310,30 @@ export default function AdminSettingsPage() {
             </button>
           </div>
         </form>
+      </div>
+
+      <div className="bg-white shadow-md rounded-lg p-6 mb-6">
+        <h2 className="text-xl font-semibold mb-4">Season Management</h2>
+        <p className="text-gray-700 mb-4">
+          Use these tools to manage season transitions. Make sure to update the Current Season setting above before using these tools.
+        </p>
+        
+        <div className="space-y-4">
+          <div>
+            <h3 className="text-lg font-medium mb-2">Update Standings with Current Season</h3>
+            <p className="text-sm text-gray-600 mb-2">
+              This will update all existing standings with the current season value: <strong>{settings?.currentSeason}</strong>
+            </p>
+            <button
+              type="button"
+              onClick={handleUpdateAllStandings}
+              disabled={updateAllStandingsMutation.isPending}
+              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300"
+            >
+              {updateAllStandingsMutation.isPending ? 'Updating...' : 'Update All Standings'}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

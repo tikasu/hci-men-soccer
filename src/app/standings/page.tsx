@@ -1,16 +1,45 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useStandings } from '@/lib/hooks/useMatches';
 import { useMatches } from '@/lib/hooks/useMatches';
 import { Standing, Match } from '@/lib/types';
 import Link from 'next/link';
 import React from 'react';
+import { getSettings } from '@/lib/services/settingsService';
 
 export default function StandingsPage() {
-  const { data: standings, isLoading } = useStandings();
+  const [selectedSeason, setSelectedSeason] = useState<string>('');
+  const [availableSeasons, setAvailableSeasons] = useState<string[]>([]);
+  const [currentSeason, setCurrentSeason] = useState<string>('');
+  const { data: standings, isLoading } = useStandings(selectedSeason);
   const { data: allMatches } = useMatches();
   const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
+  
+  // Load available seasons and current season
+  useEffect(() => {
+    const loadSeasons = async () => {
+      try {
+        const settings = await getSettings();
+        setCurrentSeason(settings.currentSeason);
+        
+        // For now, we'll just use the current season and "Winter 2024" as available seasons
+        // In a real implementation, you would fetch all available seasons from the database
+        const seasons = [settings.currentSeason];
+        if (settings.currentSeason !== 'Winter 2024') {
+          seasons.push('Winter 2024');
+        }
+        setAvailableSeasons(seasons);
+        
+        // Set the default selected season to the current season
+        setSelectedSeason(settings.currentSeason);
+      } catch (error) {
+        console.error('Error loading seasons:', error);
+      }
+    };
+    
+    loadSeasons();
+  }, []);
   
   // Function to filter matches by team ID
   const getTeamMatches = (teamId: string) => {
@@ -67,6 +96,32 @@ export default function StandingsPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6 text-center">League Standings</h1>
+      
+      {/* Season Selector */}
+      <div className="mb-6 flex justify-center">
+        <div className="inline-block relative w-64">
+          <label htmlFor="season-select" className="block text-sm font-medium text-gray-700 mb-1">
+            Select Season
+          </label>
+          <select
+            id="season-select"
+            value={selectedSeason}
+            onChange={(e) => setSelectedSeason(e.target.value)}
+            className="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-400 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+          >
+            {availableSeasons.map((season) => (
+              <option key={season} value={season}>
+                {season} {season === currentSeason ? '(Current)' : ''}
+              </option>
+            ))}
+          </select>
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 top-6">
+            <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+            </svg>
+          </div>
+        </div>
+      </div>
       
       <div className="bg-white shadow-md rounded-lg overflow-hidden mb-8">
         <div className="overflow-x-auto">
@@ -239,9 +294,9 @@ export default function StandingsPage() {
       </div>
 
       <div className="mt-8 bg-gray-50 p-6 rounded-lg border border-gray-200">
-        <h2 className="text-xl font-semibold mb-3">League Information</h2>
+        <h2 className="text-xl font-semibold mb-3">League Information - {selectedSeason}</h2>
         <p className="text-gray-700 mb-4">
-          The standings table shows each team's performance in the league, including games played, 
+          The standings table shows each team's performance in the {selectedSeason} season, including games played, 
           results, goals, and total points. Teams are ranked by total points, with goal difference 
           as the first tiebreaker.
         </p>

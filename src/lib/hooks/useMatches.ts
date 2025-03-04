@@ -12,7 +12,8 @@ import {
   updateStandings,
   recalculateTeamStandings,
   recalculateAllTeamStandings,
-  updateTeamManualRanking
+  updateTeamManualRanking,
+  updateAllStandingsWithCurrentSeason
 } from '../services/matchService';
 import { Match, Standing } from '../types';
 
@@ -141,10 +142,10 @@ export function useUpdateTeamManualRanking() {
 }
 
 // Hook for fetching all standings
-export function useStandings() {
+export function useStandings(season?: string) {
   return useQuery({
-    queryKey: ['standings'],
-    queryFn: getAllStandings,
+    queryKey: ['standings', { season }],
+    queryFn: () => getAllStandings(season),
   });
 }
 
@@ -154,5 +155,17 @@ export function useStandingByTeamId(teamId: string) {
     queryKey: ['standings', teamId],
     queryFn: () => getStandingByTeamId(teamId),
     enabled: !!teamId,
+  });
+}
+
+// Hook for updating all standings with the current season
+export function useUpdateAllStandingsWithCurrentSeason() {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: updateAllStandingsWithCurrentSeason,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['standings'] });
+    },
   });
 } 

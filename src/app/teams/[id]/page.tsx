@@ -192,7 +192,7 @@ export default function TeamDetailPage({ params }: { params: Promise<{ id: strin
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold mb-2 break-words overflow-hidden">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-3 break-words overflow-hidden tracking-tight leading-tight text-green-800 px-1">
           {team?.name || 'Team Details'}
         </h1>
         

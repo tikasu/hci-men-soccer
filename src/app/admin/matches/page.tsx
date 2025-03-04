@@ -1555,7 +1555,6 @@ export default function AdminMatchesPage() {
               <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
                 <th className="py-3 px-6 text-left">Date</th>
                 <th className="py-3 px-6 text-left">Teams</th>
-                <th className="py-3 px-6 text-center">Location</th>
                 <th className="py-3 px-6 text-center">Status</th>
                 <th className="py-3 px-6 text-center">Result</th>
                 <th className="py-3 px-6 text-center">Actions</th>
@@ -1564,7 +1563,7 @@ export default function AdminMatchesPage() {
             <tbody className="text-gray-600 text-sm">
               {isLoadingMatches ? (
                 <tr>
-                  <td colSpan={6} className="py-4 text-center">
+                  <td colSpan={5} className="py-4 text-center">
                     <div className="flex justify-center">
                       <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-green-800"></div>
                     </div>
@@ -1580,9 +1579,6 @@ export default function AdminMatchesPage() {
                       <div>
                         <span className="font-medium">{match.homeTeamName}</span> vs <span className="font-medium">{match.awayTeamName}</span>
                       </div>
-                    </td>
-                    <td className="py-3 px-6 text-center">
-                      {match.location || '-'}
                     </td>
                     <td className="py-3 px-6 text-center">
                       {match.isCompleted ? (
@@ -1644,7 +1640,7 @@ export default function AdminMatchesPage() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={6} className="py-4 text-center">
+                  <td colSpan={5} className="py-4 text-center">
                     <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative" role="alert">
                       <strong className="font-bold">No matches found!</strong>
                       <span className="block sm:inline"> There are currently no matches scheduled.</span>

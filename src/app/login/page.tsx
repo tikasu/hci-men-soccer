@@ -75,11 +75,11 @@ export default function LoginPage() {
   return (
     <div className="flex justify-center items-center min-h-[70vh]">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">Sign In</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center text-gray-900">Sign In</h1>
         
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-            <span className="block sm:inline">{error}</span>
+            <span className="block sm:inline text-base">{error}</span>
           </div>
         )}
         

@@ -23,6 +23,7 @@ export default function StatsPage() {
     } else {
       // Set new field and default direction
       setSortField(field);
+      // Always sort stats in descending order by default (highest first)
       setSortDirection(field === 'stats' ? 'desc' : 'asc');
     }
   };
@@ -59,7 +60,13 @@ export default function StatsPage() {
 
   const playerRankings = getPlayerRankings();
 
+  // Always sort by the active stat category first, then apply user's sort preference
   const sortedPlayers = allPlayers ? [...allPlayers].sort((a, b) => {
+    // For stats sorting, always use descending order (highest first)
+    if (sortField === 'stats') {
+      return b.stats[activeCategory] - a.stats[activeCategory];
+    }
+    
     const multiplier = sortDirection === 'asc' ? 1 : -1;
     
     if (sortField === 'name') {
@@ -68,10 +75,9 @@ export default function StatsPage() {
       const teamA = teams?.find(t => t.id === a.teamId)?.name || '';
       const teamB = teams?.find(t => t.id === b.teamId)?.name || '';
       return multiplier * teamA.localeCompare(teamB);
-    } else {
-      // Sort by stats (goals or assists)
-      return multiplier * (b.stats[activeCategory] - a.stats[activeCategory]);
     }
+    
+    return 0;
   }) : [];
 
   const getCategoryLabel = (category: StatCategory): string => {

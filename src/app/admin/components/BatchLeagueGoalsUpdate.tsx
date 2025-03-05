@@ -29,14 +29,15 @@ export default function BatchLeagueGoalsUpdate({ players, onSuccess, onCancel }:
   const [showPreview, setShowPreview] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const validateGoalData = (playerId: string, goals: number, lineNumber: number): string | null => {
+  const validateGoalData = (playerName: string, goals: number, lineNumber: number): string | null => {
     if (isNaN(goals) || goals < 0) {
-      return `Line ${lineNumber}: Invalid goal count. Must be a non-negative number.`;
+      return `Line ${lineNumber}: Invalid goal count for ${playerName}`;
     }
     
-    const player = players.find(p => p.id === playerId);
+    // Find player by name instead of ID
+    const player = players.find(p => p.name.toLowerCase() === playerName.toLowerCase());
     if (!player) {
-      return `Line ${lineNumber}: Player ID not found in the league.`;
+      return `Line ${lineNumber}: Player "${playerName}" not found`;
     }
     
     return null;
@@ -55,16 +56,19 @@ export default function BatchLeagueGoalsUpdate({ players, onSuccess, onCancel }:
   };
 
   const downloadSampleTemplate = () => {
-    // Create a sample template with actual player data
+    // Create sample data with just player name and goals
     const sampleData = players.slice(0, 5).map(player => 
-      `${player.id},${player.name},${player.stats.goals}`
+      `${player.name},${player.stats.goals}`
     ).join('\n');
-
-    const blob = new Blob([sampleData], { type: 'text/csv' });
+    
+    const header = "Player Name,Goals\n";
+    const content = header + sampleData;
+    
+    const blob = new Blob([content], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'league_player_goals_template.csv';
+    a.download = 'player_goals_template.csv';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -72,51 +76,49 @@ export default function BatchLeagueGoalsUpdate({ players, onSuccess, onCancel }:
   };
 
   const generatePlayerList = () => {
-    // Generate a list of all players with their IDs and current goals
+    // Generate a list of all players with their current goals
     const playerList = players.map(player => 
-      `${player.id},${player.name},${player.stats.goals}`
+      `${player.name},${player.stats.goals}`
     ).join('\n');
     
     setGoalsText(playerList);
   };
 
   const handlePreview = () => {
-    setError('');
     setValidationErrors([]);
+    setPreviewUpdates([]);
     
-    // Parse the text input into player goal data
-    const lines = goalsText.split('\n').filter(line => line.trim() !== '');
-    
-    if (lines.length === 0) {
-      setError('Please enter at least one player');
+    if (!goalsText.trim()) {
+      setValidationErrors(['Please enter player goals data']);
       return;
     }
     
-    // Validate all lines first
-    const errors: string[] = [];
+    const lines = goalsText.trim().split('\n');
     const updates: PlayerGoalUpdate[] = [];
+    const errors: string[] = [];
     
     lines.forEach((line, index) => {
+      const lineNumber = index + 1;
       const parts = line.split(',').map(part => part.trim());
       
-      if (parts.length < 3) {
-        errors.push(`Line ${index + 1}: Invalid format. Expected "PlayerID, PlayerName, Goals"`);
+      if (parts.length !== 2) {
+        errors.push(`Line ${lineNumber}: Invalid format. Expected "Player Name,Goals"`);
         return;
       }
       
-      const playerId = parts[0];
-      const playerName = parts[1];
-      const newGoals = parseInt(parts[2], 10);
+      const [playerName, goalsStr] = parts;
+      const newGoals = parseInt(goalsStr, 10);
       
-      const validationError = validateGoalData(playerId, newGoals, index + 1);
+      const validationError = validateGoalData(playerName, newGoals, lineNumber);
+      
       if (validationError) {
         errors.push(validationError);
       } else {
-        const player = players.find(p => p.id === playerId);
+        const player = players.find(p => p.name.toLowerCase() === playerName.toLowerCase());
         if (player) {
           const team = teams?.find(t => t.id === player.teamId);
           updates.push({
-            playerId,
+            playerId: player.id,
             playerName,
             teamName: team?.name || 'Unknown Team',
             currentGoals: player.stats.goals,
@@ -126,11 +128,7 @@ export default function BatchLeagueGoalsUpdate({ players, onSuccess, onCancel }:
       }
     });
     
-    if (errors.length > 0) {
-      setValidationErrors(errors);
-      return;
-    }
-    
+    setValidationErrors(errors);
     setPreviewUpdates(updates);
     setShowPreview(true);
   };
@@ -179,7 +177,29 @@ export default function BatchLeagueGoalsUpdate({ players, onSuccess, onCancel }:
   
   return (
     <div className="bg-white shadow-md rounded-lg p-6 mb-6">
-      <h2 className="text-xl font-semibold mb-4">Batch Update League Player Goals</h2>
+      <h2 className="text-xl font-semibold mb-4">Instructions</h2>
+      <p className="mb-2">Enter player goals data in the format: <code className="bg-gray-100 px-2 py-1 rounded">Player Name,Goals</code></p>
+      <p className="mb-2">Example:</p>
+      <pre className="bg-gray-100 p-2 rounded mb-4">
+        John Smith,5<br />
+        Jane Doe,3
+      </pre>
+      <div className="flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={downloadSampleTemplate}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Download Template
+        </button>
+        <button
+          type="button"
+          onClick={generatePlayerList}
+          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+        >
+          Generate Player List
+        </button>
+      </div>
       
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
@@ -247,20 +267,6 @@ export default function BatchLeagueGoalsUpdate({ players, onSuccess, onCancel }:
                 Enter Player Goals (one per line)
               </label>
               <div className="flex space-x-3">
-                <button
-                  type="button"
-                  onClick={downloadSampleTemplate}
-                  className="text-sm text-green-600 hover:text-green-800"
-                >
-                  Download Template
-                </button>
-                <button
-                  type="button"
-                  onClick={generatePlayerList}
-                  className="text-sm text-purple-600 hover:text-purple-800"
-                >
-                  Generate Player List
-                </button>
                 <input
                   type="file"
                   accept=".csv,.txt"
@@ -278,8 +284,8 @@ export default function BatchLeagueGoalsUpdate({ players, onSuccess, onCancel }:
               </div>
             </div>
             <div className="text-xs text-gray-500 mb-2">
-              Format: PlayerID, PlayerName, Goals<br />
-              Example: abc123, John Doe, 5<br />
+              Format: Player Name, Goals<br />
+              Example: John Doe, 5<br />
               Note: You can paste data directly from a spreadsheet
             </div>
             <textarea
@@ -288,7 +294,7 @@ export default function BatchLeagueGoalsUpdate({ players, onSuccess, onCancel }:
               onChange={(e) => setGoalsText(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
               rows={10}
-              placeholder="PlayerID, PlayerName, Goals"
+              placeholder="Player Name, Goals"
             />
           </div>
         </form>

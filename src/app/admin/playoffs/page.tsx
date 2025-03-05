@@ -9,12 +9,15 @@ import {
   usePlayoffMatchesByRound, 
   useUpdatePlayoffMatch,
   useInitializePlayoffBracket,
-  useUpdateNextRoundMatch
+  useUpdateNextRoundMatch,
+  useDeletePlayoffMatch,
+  useCreatePlayoffMatch
 } from '@/lib/hooks/usePlayoffMatches';
 import { PlayoffMatch, Team } from '@/lib/types';
 import Link from 'next/link';
 import PlayoffBracket from '@/components/PlayoffBracket';
 import FirebaseIndexHelper from '@/components/FirebaseIndexHelper';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function PlayoffManagementPage() {
   const { user, isAdmin, isAuthenticated, loading } = useAuth();
@@ -24,6 +27,9 @@ export default function PlayoffManagementPage() {
   const { mutate: updatePlayoffMatch } = useUpdatePlayoffMatch();
   const { mutate: initializePlayoffBracket } = useInitializePlayoffBracket();
   const { mutate: updateNextRoundMatch } = useUpdateNextRoundMatch();
+  const { mutate: deletePlayoffMatch } = useDeletePlayoffMatch();
+  const { mutate: createPlayoffMatch } = useCreatePlayoffMatch();
+  const queryClient = useQueryClient();
   
   const [activeRound, setActiveRound] = useState<'quarterfinal' | 'semifinal' | 'final'>('quarterfinal');
   const [editingMatch, setEditingMatch] = useState<PlayoffMatch | null>(null);
@@ -167,27 +173,37 @@ export default function PlayoffManagementPage() {
 
   const handleDeleteMatch = (matchId: string) => {
     if (confirm('Are you sure you want to delete this match? This action cannot be undone.')) {
-      // Reset the match to default values
+      // Get the match to reset
       const matchToReset = playoffMatches?.find(m => m.id === matchId);
       
       if (matchToReset) {
-        const resetMatch: Partial<PlayoffMatch> = {
-          date: '',
-          location: '',
-          homeTeamId: '',
-          awayTeamId: '',
-          homeTeamName: 'TBD',
-          awayTeamName: 'TBD',
-          homeScore: undefined,
-          awayScore: undefined,
-          isCompleted: false
-        };
-        
         try {
-          updatePlayoffMatch({
-            id: matchId,
-            data: resetMatch
-          });
+          // First, delete the match completely
+          deletePlayoffMatch(matchId);
+          
+          // Then create a new match with the same ID but default values
+          setTimeout(() => {
+            const defaultMatch: Partial<PlayoffMatch> = {
+              id: matchId,
+              date: '',
+              location: '',
+              homeTeamId: '',
+              awayTeamId: '',
+              homeTeamName: 'TBD',
+              awayTeamName: 'TBD',
+              round: matchToReset.round,
+              matchNumber: matchToReset.matchNumber,
+              isCompleted: false
+            };
+            
+            // Create the new match
+            createPlayoffMatch(defaultMatch);
+            
+            // Force refresh the data after a short delay
+            setTimeout(() => {
+              queryClient.invalidateQueries({ queryKey: ['playoffMatches'] });
+            }, 500);
+          }, 500);
         } catch (error) {
           console.error("Error resetting match:", error);
           alert("Failed to reset match. Please try again.");

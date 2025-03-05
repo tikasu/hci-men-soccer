@@ -9,6 +9,8 @@ import {
   query,
   where,
   orderBy,
+  deleteField,
+  setDoc
 } from 'firebase/firestore';
 import { db } from '../firebase/config';
 import { PlayoffMatch, Team } from '../types';
@@ -234,8 +236,18 @@ export const getPlayoffMatchById = async (matchId: string): Promise<PlayoffMatch
 export const createPlayoffMatch = async (matchData: Partial<PlayoffMatch>): Promise<string> => {
   try {
     const playoffMatchesCollection = collection(db, PLAYOFF_MATCHES_COLLECTION);
-    const docRef = await addDoc(playoffMatchesCollection, matchData);
-    return docRef.id;
+    
+    // If an ID is provided, use setDoc to create/update the document with that ID
+    if (matchData.id) {
+      const matchRef = doc(db, PLAYOFF_MATCHES_COLLECTION, matchData.id);
+      const { id, ...dataWithoutId } = matchData;
+      await setDoc(matchRef, dataWithoutId);
+      return matchData.id;
+    } else {
+      // Otherwise, use addDoc to generate a new ID
+      const docRef = await addDoc(playoffMatchesCollection, matchData);
+      return docRef.id;
+    }
   } catch (error) {
     console.error('Error creating playoff match:', error);
     throw error;
@@ -247,16 +259,33 @@ export const updatePlayoffMatch = async (matchId: string, matchData: Partial<Pla
   try {
     const matchRef = doc(db, PLAYOFF_MATCHES_COLLECTION, matchId);
     
-    // Ensure we're not sending undefined values to Firestore
-    // Note: null values are allowed and will clear the field in Firestore
+    // Handle field deletion (undefined values)
+    const fieldsToDelete: string[] = [];
     const cleanedData = Object.entries(matchData).reduce((acc, [key, value]) => {
-      if (value !== undefined) {
+      if (value === undefined) {
+        // Add to fields to delete
+        fieldsToDelete.push(key);
+      } else {
+        // Add to update data
         acc[key] = value;
       }
       return acc;
     }, {} as Record<string, any>);
     
-    await updateDoc(matchRef, cleanedData);
+    // First update with the cleaned data
+    if (Object.keys(cleanedData).length > 0) {
+      await updateDoc(matchRef, cleanedData);
+    }
+    
+    // Then delete fields if needed using FieldValue.delete()
+    if (fieldsToDelete.length > 0) {
+      const deleteData = fieldsToDelete.reduce((acc, field) => {
+        acc[field] = deleteField();
+        return acc;
+      }, {} as Record<string, any>);
+      
+      await updateDoc(matchRef, deleteData);
+    }
   } catch (error) {
     console.error('Error updating playoff match:', error);
     throw error;

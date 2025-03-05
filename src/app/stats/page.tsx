@@ -62,12 +62,12 @@ export default function StatsPage() {
 
   // Always sort by the active stat category first, then apply user's sort preference
   const sortedPlayers = allPlayers ? [...allPlayers].sort((a, b) => {
-    // For stats sorting, always use descending order (highest first)
-    if (sortField === 'stats') {
-      return b.stats[activeCategory] - a.stats[activeCategory];
-    }
-    
     const multiplier = sortDirection === 'asc' ? 1 : -1;
+    
+    if (sortField === 'stats') {
+      // Apply the sort direction to stats sorting as well
+      return multiplier * (b.stats[activeCategory] - a.stats[activeCategory]);
+    }
     
     if (sortField === 'name') {
       return multiplier * a.name.localeCompare(b.name);

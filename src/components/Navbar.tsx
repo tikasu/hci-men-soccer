@@ -33,7 +33,7 @@ export default function Navbar() {
           {/* Logo/Brand - visible on all screens */}
           <div className="flex items-center">
             <Link href="/" className="text-white font-bold">
-              HCI Soccer
+              {/* HCI Soccer text removed */}
             </Link>
           </div>
 

@@ -131,31 +131,34 @@ export default function PlayoffManagementPage() {
       isCompleted: formData.isCompleted
     };
     
-    updatePlayoffMatch({ 
-      id: editingMatch.id, 
-      data: updatedMatch 
-    }, {
-      onSuccess: () => {
-        // If the match is completed, update the next round
-        if (formData.isCompleted && 
-            editingMatch.round !== 'final') {
-          
-          const homeScore = parseInt(formData.homeScore || '0');
-          const awayScore = parseInt(formData.awayScore || '0');
-          const winnerId = homeScore > awayScore ? formData.homeTeamId : formData.awayTeamId;
-          const winnerName = homeScore > awayScore ? homeTeam?.name || 'TBD' : awayTeam?.name || 'TBD';
-          
-          updateNextRoundMatch({
-            currentRound: editingMatch.round as 'quarterfinal' | 'semifinal',
-            currentMatchNumber: editingMatch.matchNumber,
-            winnerId,
-            winnerName
-          });
-        }
+    try {
+      await updatePlayoffMatch({ 
+        id: editingMatch.id, 
+        data: updatedMatch 
+      });
+      
+      // If the match is completed, update the next round
+      if (formData.isCompleted && 
+          editingMatch.round !== 'final') {
         
-        setEditingMatch(null);
+        const homeScore = parseInt(formData.homeScore || '0');
+        const awayScore = parseInt(formData.awayScore || '0');
+        const winnerId = homeScore > awayScore ? formData.homeTeamId : formData.awayTeamId;
+        const winnerName = homeScore > awayScore ? homeTeam?.name || 'TBD' : awayTeam?.name || 'TBD';
+        
+        await updateNextRoundMatch({
+          currentRound: editingMatch.round as 'quarterfinal' | 'semifinal',
+          currentMatchNumber: editingMatch.matchNumber,
+          winnerId,
+          winnerName
+        });
       }
-    });
+      
+      setEditingMatch(null);
+    } catch (error) {
+      console.error("Error updating match:", error);
+      alert("Failed to update match. Please try again.");
+    }
   };
 
   const handleCancelEdit = () => {

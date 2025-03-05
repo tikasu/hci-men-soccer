@@ -55,10 +55,12 @@ export function useUpdatePlayoffMatch() {
   
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: Partial<PlayoffMatch> }) => updatePlayoffMatch(id, data),
-    onSuccess: (_, variables) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['playoffMatches'] });
-      queryClient.invalidateQueries({ queryKey: ['playoffMatches', variables.id] });
     },
+    onError: (error) => {
+      console.error('Error updating playoff match:', error);
+    }
   });
 }
 
@@ -105,5 +107,8 @@ export function useUpdateNextRoundMatch() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['playoffMatches'] });
     },
+    onError: (error) => {
+      console.error('Error updating next round match:', error);
+    }
   });
 } 

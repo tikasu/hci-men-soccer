@@ -246,7 +246,16 @@ export const createPlayoffMatch = async (matchData: Partial<PlayoffMatch>): Prom
 export const updatePlayoffMatch = async (matchId: string, matchData: Partial<PlayoffMatch>): Promise<void> => {
   try {
     const matchRef = doc(db, PLAYOFF_MATCHES_COLLECTION, matchId);
-    await updateDoc(matchRef, matchData);
+    
+    // Ensure we're not sending undefined values to Firestore
+    const cleanedData = Object.entries(matchData).reduce((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {} as Record<string, any>);
+    
+    await updateDoc(matchRef, cleanedData);
   } catch (error) {
     console.error('Error updating playoff match:', error);
     throw error;
@@ -329,6 +338,11 @@ export const updateNextRoundMatch = async (
   winnerName: string
 ): Promise<void> => {
   try {
+    if (!winnerId || !winnerName) {
+      console.error('Cannot update next round: Winner ID or name is missing');
+      return;
+    }
+    
     let nextRound: 'semifinal' | 'final';
     let nextMatchNumber: number;
     let isHomeTeam: boolean;
@@ -376,6 +390,8 @@ export const updateNextRoundMatch = async (
             awayTeamName: winnerName
           });
         }
+      } else {
+        console.error(`Next round match not found: ${nextRound} match ${nextMatchNumber}`);
       }
     } catch (indexError) {
       console.warn('Index error, falling back to client-side filtering:', indexError);
@@ -423,6 +439,8 @@ export const updateNextRoundMatch = async (
             awayTeamName: winnerName
           });
         }
+      } else {
+        console.error(`Next round match not found: ${nextRound} match ${nextMatchNumber}`);
       }
     }
   } catch (error) {

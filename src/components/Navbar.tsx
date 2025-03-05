@@ -19,7 +19,7 @@ export default function Navbar() {
   };
 
   const navItems = [
-    { name: 'Home', href: '/' },
+    { name: 'Home', href: '/home' },
     { name: 'Teams', href: '/teams' },
     { name: 'Schedule', href: '/schedule' },
     { name: 'Standings', href: '/standings' },

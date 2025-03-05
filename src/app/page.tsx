@@ -14,7 +14,7 @@ export default function Home() {
     // Add a small delay before redirecting to show the admin setup notice
     const timer = setTimeout(() => {
       setRedirecting(true);
-      router.push('/teams');
+      router.push('/standings');
     }, 5000); // 5 second delay
     
     return () => clearTimeout(timer);
@@ -35,13 +35,13 @@ export default function Home() {
         
         {redirecting ? (
           <div>
-            <p className="text-gray-600 mb-8">Redirecting to Teams page...</p>
+            <p className="text-gray-600 mb-8">Redirecting to Standings page...</p>
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-800 mx-auto"></div>
           </div>
         ) : (
           <div className="mt-6">
-            <Link href="/teams" className="bg-green-700 text-white py-2 px-4 rounded-md hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-              Go to Teams
+            <Link href="/standings" className="bg-green-700 text-white py-2 px-4 rounded-md hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+              Go to Standings
             </Link>
           </div>
         )}

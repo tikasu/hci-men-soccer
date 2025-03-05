@@ -205,22 +205,25 @@ export default function StandingsPage() {
                             return (
                               <div key={idx} className="flex items-center justify-center relative">
                                 {result === 'win' && (
-                                  <div className={`w-5 h-5 rounded-full bg-green-500 flex items-center justify-center ${isLatestMatch ? 'ring-2 ring-white' : ''}`}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <div className={`rounded-full bg-green-500 flex items-center justify-center ${isLatestMatch ? 'w-6 h-6' : 'w-5 h-5'}`}>
+                                    {isLatestMatch && <div className="absolute w-2 h-2 rounded-full bg-white"></div>}
+                                    <svg xmlns="http://www.w3.org/2000/svg" className={`text-white ${isLatestMatch ? 'h-3.5 w-3.5' : 'h-3 w-3'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                     </svg>
                                   </div>
                                 )}
                                 {result === 'loss' && (
-                                  <div className={`w-5 h-5 rounded-full bg-red-500 flex items-center justify-center ${isLatestMatch ? 'ring-2 ring-white' : ''}`}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <div className={`rounded-full bg-red-500 flex items-center justify-center ${isLatestMatch ? 'w-6 h-6' : 'w-5 h-5'}`}>
+                                    {isLatestMatch && <div className="absolute w-2 h-2 rounded-full bg-white"></div>}
+                                    <svg xmlns="http://www.w3.org/2000/svg" className={`text-white ${isLatestMatch ? 'h-3.5 w-3.5' : 'h-3 w-3'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                                     </svg>
                                   </div>
                                 )}
                                 {result === 'draw' && (
-                                  <div className={`w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center ${isLatestMatch ? 'ring-2 ring-white' : ''}`}>
-                                    <div className="h-0.5 w-2 bg-white"></div>
+                                  <div className={`rounded-full bg-gray-400 flex items-center justify-center ${isLatestMatch ? 'w-6 h-6' : 'w-5 h-5'}`}>
+                                    {isLatestMatch && <div className="absolute w-2 h-2 rounded-full bg-white"></div>}
+                                    <div className={`${isLatestMatch ? 'h-0.5 w-2.5' : 'h-0.5 w-2'} bg-white`}></div>
                                   </div>
                                 )}
                               </div>

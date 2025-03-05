@@ -2,12 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import { useTeams } from '@/lib/hooks/useTeams';
+import { useSettings } from '@/lib/hooks/useSettings';
 import Link from 'next/link';
 import TopScorers from './components/TopScorers';
 
 export default function Home() {
-  const { data: teams, isLoading } = useTeams();
-  const [currentSeason, setCurrentSeason] = useState('2023-2024');
+  const { data: teams, isLoading: isLoadingTeams } = useTeams();
+  const { data: settings, isLoading: isLoadingSettings } = useSettings();
+  
+  const isLoading = isLoadingTeams || isLoadingSettings;
 
   if (isLoading) {
     return (
@@ -20,8 +23,8 @@ export default function Home() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="bg-green-700 p-6 rounded-lg mb-8 text-white text-center">
-        <h1 className="text-3xl md:text-4xl font-bold mb-2">HCI Soccer League</h1>
-        <p className="text-xl">{currentSeason} Season</p>
+        <h1 className="text-3xl md:text-4xl font-bold mb-2">HCI MEN O30 SOCCER LEAGUE</h1>
+        <p className="text-xl">{settings?.currentSeason || 'Current'} Season</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

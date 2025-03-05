@@ -175,8 +175,8 @@ export default function StandingsPage() {
                       className={`border-b border-gray-200 hover:bg-gray-100 cursor-pointer transition-colors ${index < 8 ? 'bg-green-50' : ''} ${selectedTeamId === standing.teamId ? 'bg-green-100' : ''}`}
                       onClick={() => handleTeamClick(standing.teamId)}
                     >
-                      <td className="py-3 px-2 text-center w-10 sticky left-0 z-10 bg-inherit">{index + 1}</td>
-                      <td className="py-3 px-2 text-left font-medium flex items-center sticky left-10 z-10 bg-inherit">
+                      <td className="py-3 px-2 text-center w-10 sticky left-0 z-10" style={{backgroundColor: index < 8 ? (selectedTeamId === standing.teamId ? 'rgb(220, 252, 231)' : 'rgb(240, 253, 244)') : (selectedTeamId === standing.teamId ? 'rgb(220, 252, 231)' : 'white')}}>{index + 1}</td>
+                      <td className="py-3 px-2 text-left font-medium flex items-center sticky left-10 z-10" style={{backgroundColor: index < 8 ? (selectedTeamId === standing.teamId ? 'rgb(220, 252, 231)' : 'rgb(240, 253, 244)') : (selectedTeamId === standing.teamId ? 'rgb(220, 252, 231)' : 'white')}}>
                         {standing.teamName}
                         <span className="ml-2 text-green-600">
                           {selectedTeamId === standing.teamId ? 
@@ -354,7 +354,7 @@ export default function StandingsPage() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={11} className="py-4 px-6 text-center sticky left-0">
+                  <td colSpan={11} className="py-4 px-6 text-center sticky left-0 bg-white">
                     No standings data available yet. Check back after matches have been played.
                   </td>
                 </tr>
@@ -457,17 +457,11 @@ export default function StandingsPage() {
             -webkit-overflow-scrolling: touch;
           }
           
-          /* Ensure the sticky columns have the correct background color */
-          tr:nth-child(odd) td.bg-inherit {
-            background-color: inherit;
-          }
-          
-          tr:nth-child(even) td.bg-inherit {
-            background-color: inherit;
-          }
-          
+          /* Remove bg-inherit class as we're using inline styles for fixed backgrounds */
+          tr:nth-child(odd) td.bg-inherit,
+          tr:nth-child(even) td.bg-inherit,
           tr:hover td.bg-inherit {
-            background-color: inherit;
+            background-color: transparent;
           }
           
           /* Add shadow to indicate scrollable content */
@@ -480,6 +474,18 @@ export default function StandingsPage() {
             width: 20px;
             pointer-events: none;
             background: linear-gradient(to right, rgba(255,255,255,0), rgba(0,0,0,0.05));
+          }
+          
+          /* Add shadow to the right of the fixed columns */
+          td.sticky:last-of-type::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -5px;
+            bottom: 0;
+            width: 5px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            z-index: 9;
           }
         }
       `}</style>

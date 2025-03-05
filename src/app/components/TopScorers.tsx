@@ -18,13 +18,12 @@ export default function TopScorers() {
   
   if (isLoading) {
     return (
-      <div className="bg-white shadow-md rounded-lg p-6 animate-pulse">
-        <h2 className="text-xl font-semibold mb-4 text-gray-900">Top Goal Scorers</h2>
-        <div className="space-y-3">
+      <div className="animate-pulse">
+        <div className="space-y-2">
           {[...Array(5)].map((_, i) => (
             <div key={i} className="flex items-center justify-between">
-              <div className="h-4 bg-gray-200 rounded w-2/3"></div>
-              <div className="h-4 bg-gray-200 rounded w-8"></div>
+              <div className="h-3 bg-gray-200 rounded w-2/3"></div>
+              <div className="h-3 bg-gray-200 rounded w-6"></div>
             </div>
           ))}
         </div>
@@ -34,41 +33,30 @@ export default function TopScorers() {
   
   if (!topScorers.length) {
     return (
-      <div className="bg-white shadow-md rounded-lg p-6">
-        <h2 className="text-xl font-semibold mb-4 text-gray-900">Top Goal Scorers</h2>
-        <p className="text-gray-500">No player statistics available yet.</p>
+      <div>
+        <p className="text-sm text-gray-500">No player statistics available yet.</p>
       </div>
     );
   }
   
   return (
-    <div className="bg-white shadow-md rounded-lg p-6">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold text-gray-900">Top Goal Scorers</h2>
-        <Link 
-          href="/stats" 
-          className="text-sm text-green-700 hover:text-green-800 font-medium"
-        >
-          View All
-        </Link>
-      </div>
-      
-      <div className="space-y-3">
+    <div>
+      <div className="space-y-1.5">
         {topScorers.map((player, index) => {
           const team = teams?.find(t => t.id === player.teamId);
           
           return (
-            <div key={player.id} className="flex items-center justify-between">
+            <div key={player.id} className="flex items-center justify-between p-1.5 rounded-lg hover:bg-green-100 transition-colors duration-200">
               <div className="flex items-center">
-                <span className="font-bold text-gray-700 mr-2">{index + 1}.</span>
+                <span className="font-bold text-green-700 mr-2 w-4 h-4 bg-green-100 rounded-full flex items-center justify-center text-xs">{index + 1}</span>
                 <div>
-                  <span className="font-medium text-gray-900">{player.name}</span>
-                  <span className="text-sm text-gray-500 block">
+                  <span className="font-medium text-gray-900 text-sm">{player.name}</span>
+                  <span className="text-xs text-gray-500 block">
                     {team?.name || 'Unknown Team'}
                   </span>
                 </div>
               </div>
-              <div className="font-bold text-green-700">{player.stats.goals}</div>
+              <div className="font-bold text-green-700 bg-green-100 px-1.5 py-0.5 rounded text-xs">{player.stats.goals}</div>
             </div>
           );
         })}

@@ -21,85 +21,109 @@ export default function HomePage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="bg-green-700 p-6 rounded-lg mb-8 text-white text-center">
-        <h1 className="text-3xl md:text-4xl font-bold mb-2">HCI MEN O30 SOCCER LEAGUE</h1>
-        <p className="text-xl">{settings?.currentSeason || 'Current'} Season</p>
+    <div className="container mx-auto px-4 py-6">
+      {/* Modern, smaller banner */}
+      <div className="bg-white rounded-xl mb-6 shadow-sm border-l-4 border-green-600 flex items-center justify-center py-3">
+        <p className="text-lg sm:text-xl font-medium text-gray-800">
+          <span className="text-green-600 font-bold">{settings?.currentSeason || 'Current'}</span> Season
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-2">
-          <div className="bg-white shadow-md rounded-lg p-6 mb-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-gray-900">League Standings</h2>
+      {/* Mobile-friendly card layout */}
+      <div className="flex flex-col gap-4 sm:gap-6">
+        {/* Standings Card - Priority 1 */}
+        <div className="group bg-white shadow-md hover:shadow-lg rounded-xl overflow-hidden transition-all duration-300 transform hover:scale-[1.02] hover:bg-green-50">
+          <div className="p-4 sm:p-6">
+            <div className="flex justify-between items-center mb-3">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900">League Standings</h2>
+            </div>
+            
+            <div className="overflow-hidden max-h-0 group-hover:max-h-40 transition-all duration-300">
+              <p className="text-gray-700 mb-4">
+                Check out the current standings to see how your favorite team is performing this season.
+              </p>
+            </div>
+            
+            <div>
               <Link 
                 href="/standings" 
-                className="text-sm text-green-700 hover:text-green-800 font-medium"
+                className="inline-block w-full bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800 text-base text-center transition-colors duration-300"
               >
-                View Full Standings
+                View Standings
               </Link>
             </div>
-            
-            <p className="text-gray-700 mb-4">
-              Check out the current standings to see how your favorite team is performing this season.
-            </p>
-            
-            <Link 
-              href="/standings" 
-              className="inline-block bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800 text-base"
-            >
-              View Standings
-            </Link>
-          </div>
-
-          <div className="bg-white shadow-md rounded-lg p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-gray-900">Upcoming Matches</h2>
-              <Link 
-                href="/schedule" 
-                className="text-sm text-green-700 hover:text-green-800 font-medium"
-              >
-                View Full Schedule
-              </Link>
-            </div>
-            
-            <p className="text-gray-700 mb-4">
-              Stay up to date with all the upcoming matches in the league.
-            </p>
-            
-            <Link 
-              href="/schedule" 
-              className="inline-block bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800 text-base"
-            >
-              View Schedule
-            </Link>
           </div>
         </div>
 
-        <div className="space-y-6">
-          <TopScorers />
-          
-          <div className="bg-white shadow-md rounded-lg p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-gray-900">Teams</h2>
-              <Link 
-                href="/teams" 
-                className="text-sm text-green-700 hover:text-green-800 font-medium"
-              >
-                View All
-              </Link>
+        {/* Schedule Card - Priority 2 */}
+        <div className="group bg-white shadow-md hover:shadow-lg rounded-xl overflow-hidden transition-all duration-300 transform hover:scale-[1.02] hover:bg-green-50">
+          <div className="p-4 sm:p-6">
+            <div className="flex justify-between items-center mb-3">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Upcoming Matches</h2>
             </div>
             
-            <p className="text-gray-700 mb-4">
-              {teams?.length || 0} teams competing this season
-            </p>
+            <div className="overflow-hidden max-h-0 group-hover:max-h-40 transition-all duration-300">
+              <p className="text-gray-700 mb-4">
+                Stay up to date with all the upcoming matches in the league.
+              </p>
+            </div>
             
-            <Link 
-              href="/teams" 
-              className="inline-block bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800 text-base"
-            >
-              View Teams
-            </Link>
+            <div>
+              <Link 
+                href="/schedule" 
+                className="inline-block w-full bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800 text-base text-center transition-colors duration-300"
+              >
+                View Schedule
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Teams Card - Priority 3 */}
+        <div className="group bg-white shadow-md hover:shadow-lg rounded-xl overflow-hidden transition-all duration-300 transform hover:scale-[1.02] hover:bg-green-50">
+          <div className="p-4 sm:p-6">
+            <div className="flex justify-between items-center mb-3">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Teams</h2>
+            </div>
+            
+            <div className="overflow-hidden max-h-0 group-hover:max-h-40 transition-all duration-300">
+              <p className="text-gray-700 mb-4">
+                {teams?.length || 0} teams competing this season
+              </p>
+            </div>
+            
+            <div>
+              <Link 
+                href="/teams" 
+                className="inline-block w-full bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800 text-base text-center transition-colors duration-300"
+              >
+                View Teams
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Top Scorers Card - Priority 4 */}
+        <div className="group bg-white shadow-md hover:shadow-lg rounded-xl overflow-hidden transition-all duration-300 transform hover:scale-[1.02] hover:bg-green-50">
+          <div className="p-4 sm:p-6">
+            <div className="flex justify-between items-center mb-3">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Top Goal Scorers</h2>
+            </div>
+            
+            <div className="overflow-hidden max-h-0 group-hover:max-h-[300px] transition-all duration-300">
+              <div className="mb-4">
+                <TopScorers />
+              </div>
+            </div>
+            
+            <div>
+              <Link 
+                href="/stats" 
+                className="inline-block w-full bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800 text-base text-center transition-colors duration-300"
+              >
+                View All Stats
+              </Link>
+            </div>
           </div>
         </div>
       </div>

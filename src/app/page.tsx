@@ -7,8 +7,8 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    // Immediately redirect to standings page
-    router.replace('/standings');
+    // Redirect to home page instead of standings
+    router.replace('/home');
   }, [router]);
 
   // Return null or minimal content as it won't be visible

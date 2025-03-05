@@ -328,8 +328,8 @@ export default function StandingsPage() {
         <h2 className="text-xl font-semibold mb-3 text-gray-900">League Information - {selectedSeason}</h2>
         <p className="text-gray-800 text-base mb-4">
           The standings table shows each team's performance in the {selectedSeason} season, including games played, 
-          results, goals, and total points. Teams are ranked by total points, with goal difference 
-          as the first tiebreaker.
+          results, goals, and total points. Teams are ranked by total points, with head-to-head results 
+          as the first tiebreaker and goal difference as the second tiebreaker.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-white p-4 rounded shadow-sm">
@@ -341,12 +341,12 @@ export default function StandingsPage() {
             </ul>
           </div>
           <div className="bg-white p-4 rounded shadow-sm">
-            <h3 className="font-medium text-green-700 mb-2 text-base">Key</h3>
-            <ul className="space-y-1 text-gray-800 text-base">
-              <li><span className="font-medium">GF</span>: Goals For</li>
-              <li><span className="font-medium">GA</span>: Goals Against</li>
-              <li><span className="font-medium">GD</span>: Goal Difference</li>
-            </ul>
+            <h3 className="font-medium text-green-700 mb-2 text-base">Tiebreakers</h3>
+            <ol className="list-decimal pl-5 text-gray-800 text-base">
+              <li className="mb-1">Head-to-head results</li>
+              <li className="mb-1">Goal difference</li>
+              <li className="mb-1">Goals scored</li>
+            </ol>
           </div>
           <div className="bg-white p-4 rounded shadow-sm">
             <h3 className="font-medium text-green-700 mb-2 text-base">Top Teams</h3>

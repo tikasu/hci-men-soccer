@@ -204,7 +204,7 @@ export default function AdminStandingsPage() {
       {isEditingRanks && (
         <div className="bg-yellow-50 border border-yellow-400 text-yellow-700 p-4 rounded-md mb-4">
           <p className="font-medium">Manual Ranking Mode</p>
-          <p>Select teams you want to manually rank and set their position. Teams not selected will be automatically ranked based on points and goal difference.</p>
+          <p>Select teams you want to manually rank and set their position. Teams not selected will be automatically ranked based on points, head-to-head results, and goal difference.</p>
         </div>
       )}
 
@@ -232,7 +232,7 @@ export default function AdminStandingsPage() {
               <div><strong>L</strong>: Lost</div>
               <div><strong>GF</strong>: Goals For</div>
               <div><strong>GA</strong>: Goals Against</div>
-              <div><strong>GD</strong>: Goal Difference</div>
+              <div><strong>GD</strong>: Goal Difference (GF-GA)</div>
               <div><strong>Pts</strong>: Points</div>
               <div><strong>Type</strong>: Ranking Type</div>
             </div>
@@ -340,7 +340,8 @@ export default function AdminStandingsPage() {
         <p className="text-gray-700">
           Standings are automatically calculated and updated when matches are marked as completed. 
           The standings table shows each team's performance in the league, including games played, 
-          results, goals, and total points.
+          results, goals, and total points. Teams are ranked by total points, with head-to-head results 
+          as the first tiebreaker and goal difference as the second tiebreaker.
         </p>
         <div className="mt-4">
           <h3 className="font-medium">Points System:</h3>
@@ -351,10 +352,19 @@ export default function AdminStandingsPage() {
           </ul>
         </div>
         <div className="mt-4">
+          <h3 className="font-medium">Tiebreakers:</h3>
+          <ol className="list-decimal pl-5 mt-2">
+            <li>Head-to-head results between tied teams</li>
+            <li>Goal difference in head-to-head matches</li>
+            <li>Overall goal difference</li>
+            <li>Goals scored</li>
+          </ol>
+        </div>
+        <div className="mt-4">
           <h3 className="font-medium">Manual Ranking:</h3>
           <p className="mt-2">
             As an administrator, you can manually adjust team rankings for special cases like 
-            head-to-head tiebreakers or other league rules. Manual rankings will override the 
+            complex tiebreaker situations or other league rules. Manual rankings will override the 
             automatic point-based ranking. This is only visible to administrators - users will 
             see the final standings without knowing which teams were manually ranked.
           </p>

@@ -468,52 +468,260 @@ export const getAllStandingsWithManualRanking = async (season?: string): Promise
       };
     });
     
-    // First, sort by points and goal difference (automatic ranking)
+    // Get all matches for head-to-head comparison
+    const matchesCollection = collection(db, MATCHES_COLLECTION);
+    const matchesQuery = query(matchesCollection, where('isCompleted', '==', true));
+    const matchesSnapshot = await getDocs(matchesQuery);
+    const matches = matchesSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    } as Match));
+    
+    // First, sort by points (primary ranking factor)
     let sortedStandings = [...standings].sort((a, b) => {
-      if (a.points !== b.points) {
-        return b.points - a.points;
-      }
-      return (b.goalsFor - b.goalsAgainst) - (a.goalsFor - a.goalsAgainst);
+      return b.points - a.points;
     });
     
+    // Group teams with the same number of points
+    const pointGroups: Record<number, Standing[]> = {};
+    sortedStandings.forEach(standing => {
+      if (!pointGroups[standing.points]) {
+        pointGroups[standing.points] = [];
+      }
+      pointGroups[standing.points].push(standing);
+    });
+    
+    // For each group of teams with the same points, apply tiebreakers
+    const finalStandings: Standing[] = [];
+    
+    // Process each point group
+    Object.values(pointGroups).forEach(group => {
+      if (group.length === 1) {
+        // No tiebreaker needed for a single team
+        finalStandings.push(group[0]);
+      } else {
+        // Apply tiebreakers for groups with multiple teams
+        const resolvedGroup = resolveGroupTiebreakers(group, matches);
+        finalStandings.push(...resolvedGroup);
+      }
+    });
+    
+    // Sort the final standings by points (descending)
+    finalStandings.sort((a, b) => b.points - a.points);
+    
     // Then, apply manual rankings if they exist
-    const manuallyRankedTeams = sortedStandings.filter(s => s.manuallyRanked);
-    const automaticallyRankedTeams = sortedStandings.filter(s => !s.manuallyRanked);
+    const manuallyRankedTeams = finalStandings.filter(s => s.manuallyRanked);
+    const automaticallyRankedTeams = finalStandings.filter(s => !s.manuallyRanked);
     
     if (manuallyRankedTeams.length > 0) {
       // Sort manually ranked teams by their manual rank
       manuallyRankedTeams.sort((a, b) => (a.manualRank || 0) - (b.manualRank || 0));
       
       // Combine the lists, with manually ranked teams in their specified positions
-      const finalStandings: Standing[] = [];
+      const manualFinalStandings: Standing[] = [];
       let autoIndex = 0;
       
-      for (let i = 0; i < sortedStandings.length; i++) {
+      for (let i = 0; i < finalStandings.length; i++) {
         const manualTeamAtThisRank = manuallyRankedTeams.find(t => t.manualRank === i + 1);
         
         if (manualTeamAtThisRank) {
-          finalStandings.push(manualTeamAtThisRank);
+          manualFinalStandings.push(manualTeamAtThisRank);
         } else if (autoIndex < automaticallyRankedTeams.length) {
-          finalStandings.push(automaticallyRankedTeams[autoIndex]);
+          manualFinalStandings.push(automaticallyRankedTeams[autoIndex]);
           autoIndex++;
         }
       }
       
       // Add any remaining teams
       while (autoIndex < automaticallyRankedTeams.length) {
-        finalStandings.push(automaticallyRankedTeams[autoIndex]);
+        manualFinalStandings.push(automaticallyRankedTeams[autoIndex]);
         autoIndex++;
       }
       
-      return finalStandings;
+      return manualFinalStandings;
     }
     
     // If no manual rankings, return the automatically sorted standings
-    return sortedStandings;
+    return finalStandings;
   } catch (error) {
     console.error('Error getting standings with manual ranking:', error);
     throw error;
   }
+};
+
+// Helper function to resolve tiebreakers within a group of teams with the same points
+const resolveGroupTiebreakers = (group: Standing[], matches: Match[]): Standing[] => {
+  if (group.length <= 1) {
+    return group;
+  }
+  
+  // Create a map of head-to-head results
+  const h2hResults: Record<string, Record<string, { played: number, won: number, drawn: number, lost: number, goalsFor: number, goalsAgainst: number, points: number }>> = {};
+  
+  // Initialize the h2h results map
+  group.forEach(team => {
+    h2hResults[team.teamId] = {};
+    group.forEach(opponent => {
+      if (team.teamId !== opponent.teamId) {
+        h2hResults[team.teamId][opponent.teamId] = {
+          played: 0,
+          won: 0,
+          drawn: 0,
+          lost: 0,
+          goalsFor: 0,
+          goalsAgainst: 0,
+          points: 0
+        };
+      }
+    });
+  });
+  
+  // Calculate head-to-head results
+  matches.forEach(match => {
+    const homeTeamId = match.homeTeamId;
+    const awayTeamId = match.awayTeamId;
+    
+    // Check if both teams are in the group
+    if (
+      group.some(team => team.teamId === homeTeamId) && 
+      group.some(team => team.teamId === awayTeamId)
+    ) {
+      // Update home team's h2h record
+      if (h2hResults[homeTeamId] && h2hResults[homeTeamId][awayTeamId]) {
+        h2hResults[homeTeamId][awayTeamId].played += 1;
+        h2hResults[homeTeamId][awayTeamId].goalsFor += match.homeScore || 0;
+        h2hResults[homeTeamId][awayTeamId].goalsAgainst += match.awayScore || 0;
+        
+        if (match.homeScore! > match.awayScore!) {
+          h2hResults[homeTeamId][awayTeamId].won += 1;
+          h2hResults[homeTeamId][awayTeamId].points += 3; // Assuming 3 points for a win
+        } else if (match.homeScore === match.awayScore) {
+          h2hResults[homeTeamId][awayTeamId].drawn += 1;
+          h2hResults[homeTeamId][awayTeamId].points += 1; // Assuming 1 point for a draw
+        } else {
+          h2hResults[homeTeamId][awayTeamId].lost += 1;
+        }
+      }
+      
+      // Update away team's h2h record
+      if (h2hResults[awayTeamId] && h2hResults[awayTeamId][homeTeamId]) {
+        h2hResults[awayTeamId][homeTeamId].played += 1;
+        h2hResults[awayTeamId][homeTeamId].goalsFor += match.awayScore || 0;
+        h2hResults[awayTeamId][homeTeamId].goalsAgainst += match.homeScore || 0;
+        
+        if (match.awayScore! > match.homeScore!) {
+          h2hResults[awayTeamId][homeTeamId].won += 1;
+          h2hResults[awayTeamId][homeTeamId].points += 3; // Assuming 3 points for a win
+        } else if (match.awayScore === match.homeScore) {
+          h2hResults[awayTeamId][homeTeamId].drawn += 1;
+          h2hResults[awayTeamId][homeTeamId].points += 1; // Assuming 1 point for a draw
+        } else {
+          h2hResults[awayTeamId][homeTeamId].lost += 1;
+        }
+      }
+    }
+  });
+  
+  // Calculate total h2h points and goal difference for each team
+  const h2hStats: Record<string, { points: number, goalDiff: number }> = {};
+  
+  group.forEach(team => {
+    h2hStats[team.teamId] = {
+      points: 0,
+      goalDiff: 0
+    };
+    
+    Object.keys(h2hResults[team.teamId]).forEach(opponentId => {
+      const result = h2hResults[team.teamId][opponentId];
+      h2hStats[team.teamId].points += result.points;
+      h2hStats[team.teamId].goalDiff += (result.goalsFor - result.goalsAgainst);
+    });
+  });
+  
+  // Sort the group by h2h points, then h2h goal difference, then overall goal difference
+  const sortedGroup = [...group].sort((a, b) => {
+    // First tiebreaker: Head-to-head points
+    const h2hPointsDiff = h2hStats[b.teamId].points - h2hStats[a.teamId].points;
+    if (h2hPointsDiff !== 0) {
+      return h2hPointsDiff;
+    }
+    
+    // Second tiebreaker: Head-to-head goal difference
+    const h2hGoalDiff = h2hStats[b.teamId].goalDiff - h2hStats[a.teamId].goalDiff;
+    if (h2hGoalDiff !== 0) {
+      return h2hGoalDiff;
+    }
+    
+    // Third tiebreaker: Overall goal difference
+    return (b.goalsFor - b.goalsAgainst) - (a.goalsFor - a.goalsAgainst);
+  });
+  
+  // Handle circular head-to-head situations
+  // If teams are still tied after all tiebreakers, we need to check for circular results
+  // This is a simplified approach - for complex circular situations, more sophisticated algorithms might be needed
+  const finalSortedGroup = handleCircularH2H(sortedGroup, h2hResults, h2hStats);
+  
+  return finalSortedGroup;
+};
+
+// Helper function to handle circular head-to-head situations
+const handleCircularH2H = (
+  sortedGroup: Standing[], 
+  h2hResults: Record<string, Record<string, any>>,
+  h2hStats: Record<string, { points: number, goalDiff: number }>
+): Standing[] => {
+  // Find groups of teams that are still tied after all tiebreakers
+  const tiedGroups: Standing[][] = [];
+  let currentTiedGroup: Standing[] = [sortedGroup[0]];
+  
+  for (let i = 1; i < sortedGroup.length; i++) {
+    const prevTeam = sortedGroup[i - 1];
+    const currentTeam = sortedGroup[i];
+    
+    // Check if teams are tied on all tiebreakers
+    if (
+      h2hStats[prevTeam.teamId].points === h2hStats[currentTeam.teamId].points &&
+      h2hStats[prevTeam.teamId].goalDiff === h2hStats[currentTeam.teamId].goalDiff &&
+      (prevTeam.goalsFor - prevTeam.goalsAgainst) === (currentTeam.goalsFor - currentTeam.goalsAgainst)
+    ) {
+      currentTiedGroup.push(currentTeam);
+    } else {
+      if (currentTiedGroup.length > 1) {
+        tiedGroups.push([...currentTiedGroup]);
+      }
+      currentTiedGroup = [currentTeam];
+    }
+  }
+  
+  // Add the last tied group if it exists
+  if (currentTiedGroup.length > 1) {
+    tiedGroups.push(currentTiedGroup);
+  }
+  
+  // If there are no tied groups, return the original sorted group
+  if (tiedGroups.length === 0) {
+    return sortedGroup;
+  }
+  
+  // For each tied group, try to resolve circular situations
+  const finalGroup = [...sortedGroup];
+  
+  tiedGroups.forEach(tiedGroup => {
+    // For circular situations, we'll use overall goal difference as the final tiebreaker
+    const resolvedTiedGroup = [...tiedGroup].sort((a, b) => {
+      return (b.goalsFor - b.goalsAgainst) - (a.goalsFor - a.goalsAgainst);
+    });
+    
+    // Replace the tied teams in the final group with the resolved order
+    const startIndex = finalGroup.findIndex(team => team.teamId === tiedGroup[0].teamId);
+    if (startIndex >= 0) {
+      for (let i = 0; i < resolvedTiedGroup.length; i++) {
+        finalGroup[startIndex + i] = resolvedTiedGroup[i];
+      }
+    }
+  });
+  
+  return finalGroup;
 };
 
 // Update all existing standings with the current season

@@ -9,6 +9,7 @@ import {
   addPlayerToTeam,
   updatePlayer,
   deletePlayer,
+  getAllPlayersInLeague
 } from '../services/teamService';
 import { Team, Player } from '../types';
 
@@ -96,6 +97,14 @@ export function usePlayersByTeamId(teamId: string) {
     queryKey: ['players', 'team', teamId],
     queryFn: () => getPlayersByTeamId(teamId),
     enabled: !!teamId,
+  });
+}
+
+// Hook for fetching all players in the league
+export function useAllPlayersInLeague() {
+  return useQuery({
+    queryKey: ['players', 'all'],
+    queryFn: getAllPlayersInLeague,
   });
 }
 

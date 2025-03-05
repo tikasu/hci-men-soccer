@@ -115,6 +115,21 @@ export const getPlayersByTeamId = async (teamId: string): Promise<Player[]> => {
   }
 };
 
+// Get all players in the league
+export const getAllPlayersInLeague = async (): Promise<Player[]> => {
+  try {
+    const playersSnapshot = await getDocs(collection(db, PLAYERS_COLLECTION));
+    
+    return playersSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as Player[];
+  } catch (error) {
+    console.error('Error getting all players:', error);
+    return [];
+  }
+};
+
 // Add a player to a team
 export const addPlayerToTeam = async (teamId: string, player: Omit<Player, 'id'>): Promise<Player | null> => {
   try {

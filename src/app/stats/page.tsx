@@ -1,10 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useTeams } from '@/lib/hooks/useTeams';
+import { useState } from 'react';
+import { useTeams, useAllPlayersInLeague } from '@/lib/hooks/useTeams';
 import { Player } from '@/lib/types';
 import Link from 'next/link';
-import { getPlayersByTeamId } from '@/lib/services/teamService';
 
 type StatCategory = 'goals' | 'assists';
 type SortField = 'name' | 'team' | 'stats';
@@ -12,37 +11,10 @@ type SortDirection = 'asc' | 'desc';
 
 export default function StatsPage() {
   const { data: teams, isLoading: isLoadingTeams } = useTeams();
-  const [allPlayers, setAllPlayers] = useState<Player[]>([]);
-  const [isLoadingPlayers, setIsLoadingPlayers] = useState(true);
+  const { data: allPlayers, isLoading: isLoadingPlayers } = useAllPlayersInLeague();
   const [activeCategory, setActiveCategory] = useState<StatCategory>('goals');
   const [sortField, setSortField] = useState<SortField>('stats');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
-
-  // Fetch players from all teams
-  useEffect(() => {
-    const fetchAllPlayers = async () => {
-      if (!teams) return;
-      
-      setIsLoadingPlayers(true);
-      
-      try {
-        // Use Promise.all to fetch players for each team directly from the service
-        const playersPromises = teams.map(team => getPlayersByTeamId(team.id));
-        const playersArrays = await Promise.all(playersPromises);
-        const players = playersArrays.flat();
-        
-        setAllPlayers(players);
-      } catch (error) {
-        console.error('Error fetching players:', error);
-      } finally {
-        setIsLoadingPlayers(false);
-      }
-    };
-    
-    if (teams) {
-      fetchAllPlayers();
-    }
-  }, [teams]);
 
   const handleSort = (field: SortField) => {
     if (field === sortField) {
@@ -57,10 +29,12 @@ export default function StatsPage() {
 
   // First, create a ranking map based on the active category
   const getPlayerRankings = () => {
+    if (!allPlayers) return new Map<string, number>();
+    
     const rankMap = new Map<string, number>();
     
     // Sort players by the active stat category (descending)
-    const statSortedPlayers = [...(allPlayers || [])].sort((a, b) => 
+    const statSortedPlayers = [...allPlayers].sort((a, b) => 
       b.stats[activeCategory] - a.stats[activeCategory]
     );
     
@@ -85,7 +59,7 @@ export default function StatsPage() {
 
   const playerRankings = getPlayerRankings();
 
-  const sortedPlayers = [...(allPlayers || [])].sort((a, b) => {
+  const sortedPlayers = allPlayers ? [...allPlayers].sort((a, b) => {
     const multiplier = sortDirection === 'asc' ? 1 : -1;
     
     if (sortField === 'name') {
@@ -98,7 +72,7 @@ export default function StatsPage() {
       // Sort by stats (goals or assists)
       return multiplier * (b.stats[activeCategory] - a.stats[activeCategory]);
     }
-  });
+  }) : [];
 
   const getCategoryLabel = (category: StatCategory): string => {
     switch (category) {

@@ -17,14 +17,17 @@ export default function StatsPage() {
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
   const handleSort = (field: SortField) => {
-    if (field === sortField) {
-      // Toggle direction if clicking the same field
+    if (field === 'stats') {
+      // For stats field, always set to descending order (most goals at top)
+      setSortField(field);
+      setSortDirection('desc');
+    } else if (field === sortField) {
+      // Toggle direction if clicking the same field (except stats)
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
       // Set new field and default direction
       setSortField(field);
-      // Always sort stats in descending order by default (highest first)
-      setSortDirection(field === 'stats' ? 'desc' : 'asc');
+      setSortDirection('asc');
     }
   };
 
@@ -62,12 +65,13 @@ export default function StatsPage() {
 
   // Always sort by the active stat category first, then apply user's sort preference
   const sortedPlayers = allPlayers ? [...allPlayers].sort((a, b) => {
-    const multiplier = sortDirection === 'asc' ? 1 : -1;
-    
+    // For stats field, always sort in descending order (most goals at top)
     if (sortField === 'stats') {
-      // Apply the sort direction to stats sorting as well
-      return multiplier * (b.stats[activeCategory] - a.stats[activeCategory]);
+      return b.stats[activeCategory] - a.stats[activeCategory];
     }
+    
+    // For other fields, respect the sort direction
+    const multiplier = sortDirection === 'asc' ? 1 : -1;
     
     if (sortField === 'name') {
       return multiplier * a.name.localeCompare(b.name);

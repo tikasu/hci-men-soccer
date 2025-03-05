@@ -151,11 +151,11 @@ export default function StandingsPage() {
       </div>
       
       <div className="bg-white shadow-md rounded-lg overflow-hidden mb-8">
-        <div className="overflow-x-auto">
+        <div className="relative overflow-x-auto">
           <table className="min-w-full bg-white">
-            <thead className="bg-green-700 text-white uppercase text-sm leading-normal">
+            <thead className="bg-green-700 text-white uppercase text-sm leading-normal sticky top-0 z-10">
               <tr>
-                <th className="py-3 px-6 text-left" colSpan={2}>TEAM</th>
+                <th className="py-3 px-6 text-left sticky left-0 z-20 bg-green-700" colSpan={2}>TEAM</th>
                 <th className="py-3 px-6 text-center">MP</th>
                 <th className="py-3 px-6 text-center">W</th>
                 <th className="py-3 px-6 text-center">D</th>
@@ -175,8 +175,8 @@ export default function StandingsPage() {
                       className={`border-b border-gray-200 hover:bg-gray-100 cursor-pointer transition-colors ${index < 8 ? 'bg-green-50' : ''} ${selectedTeamId === standing.teamId ? 'bg-green-100' : ''}`}
                       onClick={() => handleTeamClick(standing.teamId)}
                     >
-                      <td className="py-3 px-2 text-center w-10">{index + 1}</td>
-                      <td className="py-3 px-2 text-left font-medium flex items-center">
+                      <td className="py-3 px-2 text-center w-10 sticky left-0 z-10 bg-inherit">{index + 1}</td>
+                      <td className="py-3 px-2 text-left font-medium flex items-center sticky left-10 z-10 bg-inherit">
                         {standing.teamName}
                         <span className="ml-2 text-green-600">
                           {selectedTeamId === standing.teamId ? 
@@ -201,24 +201,25 @@ export default function StandingsPage() {
                         <div className="flex justify-center space-x-1">
                           {getLastFiveMatches(standing.teamId).map((match, idx) => {
                             const result = getMatchResult(match, standing.teamId);
+                            const isLatestMatch = idx === getLastFiveMatches(standing.teamId).length - 1;
                             return (
-                              <div key={idx} className="flex items-center justify-center">
+                              <div key={idx} className="flex items-center justify-center relative">
                                 {result === 'win' && (
-                                  <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+                                  <div className={`w-5 h-5 rounded-full bg-green-500 flex items-center justify-center ${isLatestMatch ? 'ring-2 ring-white' : ''}`}>
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                     </svg>
                                   </div>
                                 )}
                                 {result === 'loss' && (
-                                  <div className="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center">
+                                  <div className={`w-5 h-5 rounded-full bg-red-500 flex items-center justify-center ${isLatestMatch ? 'ring-2 ring-white' : ''}`}>
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                                     </svg>
                                   </div>
                                 )}
                                 {result === 'draw' && (
-                                  <div className="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
+                                  <div className={`w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center ${isLatestMatch ? 'ring-2 ring-white' : ''}`}>
                                     <div className="h-0.5 w-2 bg-white"></div>
                                   </div>
                                 )}
@@ -344,7 +345,7 @@ export default function StandingsPage() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={11} className="py-4 px-6 text-center">
+                  <td colSpan={11} className="py-4 px-6 text-center sticky left-0">
                     No standings data available yet. Check back after matches have been played.
                   </td>
                 </tr>
@@ -438,6 +439,39 @@ export default function StandingsPage() {
         }
         .animate-fadeIn {
           animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        /* Responsive table styles */
+        @media (max-width: 768px) {
+          .overflow-x-auto {
+            max-width: 100%;
+            -webkit-overflow-scrolling: touch;
+          }
+          
+          /* Ensure the sticky columns have the correct background color */
+          tr:nth-child(odd) td.bg-inherit {
+            background-color: inherit;
+          }
+          
+          tr:nth-child(even) td.bg-inherit {
+            background-color: inherit;
+          }
+          
+          tr:hover td.bg-inherit {
+            background-color: inherit;
+          }
+          
+          /* Add shadow to indicate scrollable content */
+          .relative.overflow-x-auto::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 20px;
+            pointer-events: none;
+            background: linear-gradient(to right, rgba(255,255,255,0), rgba(0,0,0,0.05));
+          }
         }
       `}</style>
     </div>

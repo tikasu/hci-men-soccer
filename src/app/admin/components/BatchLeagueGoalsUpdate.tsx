@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { updatePlayer } from '@/lib/services/teamService';
 import { Player } from '@/lib/types';
+import { useTeams } from '@/lib/hooks/useTeams';
 
 interface BatchLeagueGoalsUpdateProps {
   players: Player[];
@@ -17,6 +18,7 @@ interface PlayerGoalUpdate {
 }
 
 export default function BatchLeagueGoalsUpdate({ players, onSuccess, onCancel }: BatchLeagueGoalsUpdateProps) {
+  const { data: teams } = useTeams();
   const [goalsText, setGoalsText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -112,10 +114,11 @@ export default function BatchLeagueGoalsUpdate({ players, onSuccess, onCancel }:
       } else {
         const player = players.find(p => p.id === playerId);
         if (player) {
+          const team = teams?.find(t => t.id === player.teamId);
           updates.push({
             playerId,
             playerName,
-            teamName: player.teamName || 'Unknown Team',
+            teamName: team?.name || 'Unknown Team',
             currentGoals: player.stats.goals,
             newGoals
           });

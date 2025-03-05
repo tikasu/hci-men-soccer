@@ -21,8 +21,8 @@ export default function Logo() {
           <Link href="/" className="flex items-center">
             <div className="flex items-center">
               <Image 
-                src="/HCI logo.png" 
-                alt="HCI Logo" 
+                src="/HCI soccer logo.png" 
+                alt="HCI Soccer Logo" 
                 width={100}
                 height={24}
                 className="w-[80px] sm:w-[100px] md:w-[125px]"

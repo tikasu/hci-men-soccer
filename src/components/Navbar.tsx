@@ -33,14 +33,8 @@ export default function Navbar() {
         <div className="flex justify-between h-12">
           {/* Logo/Brand - visible on all screens */}
           <div className="flex items-center">
-            <Link href="/" className="flex items-center">
-              <Image 
-                src="/HCI soccer logo.png" 
-                alt="HCI Soccer Logo" 
-                width={40} 
-                height={40} 
-                className="mr-2"
-              />
+            <Link href="/" className="text-white font-bold">
+              HCI Soccer
             </Link>
           </div>
 

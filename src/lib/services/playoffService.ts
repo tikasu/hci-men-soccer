@@ -248,6 +248,7 @@ export const updatePlayoffMatch = async (matchId: string, matchData: Partial<Pla
     const matchRef = doc(db, PLAYOFF_MATCHES_COLLECTION, matchId);
     
     // Ensure we're not sending undefined values to Firestore
+    // Note: null values are allowed and will clear the field in Firestore
     const cleanedData = Object.entries(matchData).reduce((acc, [key, value]) => {
       if (value !== undefined) {
         acc[key] = value;

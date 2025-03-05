@@ -178,15 +178,20 @@ export default function PlayoffManagementPage() {
           awayTeamId: '',
           homeTeamName: 'TBD',
           awayTeamName: 'TBD',
-          homeScore: undefined,
-          awayScore: undefined,
+          homeScore: null,
+          awayScore: null,
           isCompleted: false
         };
         
-        updatePlayoffMatch({
-          id: matchId,
-          data: resetMatch
-        });
+        try {
+          updatePlayoffMatch({
+            id: matchId,
+            data: resetMatch
+          });
+        } catch (error) {
+          console.error("Error resetting match:", error);
+          alert("Failed to reset match. Please try again.");
+        }
       }
     }
   };

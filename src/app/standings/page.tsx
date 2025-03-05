@@ -50,6 +50,33 @@ export default function StandingsPage() {
     ).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   };
   
+  // Function to get last 5 matches for a team
+  const getLastFiveMatches = (teamId: string) => {
+    if (!allMatches) return [];
+    
+    const teamMatches = allMatches
+      .filter((match: Match) => 
+        (match.homeTeamId === teamId || match.awayTeamId === teamId) && 
+        match.isCompleted
+      )
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .slice(0, 5)
+      .reverse(); // Reverse to show oldest to newest (left to right)
+    
+    return teamMatches;
+  };
+  
+  // Function to determine match result for a team
+  const getMatchResult = (match: Match, teamId: string) => {
+    const isHomeTeam = match.homeTeamId === teamId;
+    const teamScore = isHomeTeam ? match.homeScore : match.awayScore;
+    const opponentScore = isHomeTeam ? match.awayScore : match.homeScore;
+    
+    if (teamScore === opponentScore) return 'draw';
+    if (teamScore! > opponentScore!) return 'win';
+    return 'loss';
+  };
+  
   // Function to format date
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -128,16 +155,16 @@ export default function StandingsPage() {
           <table className="min-w-full bg-white">
             <thead className="bg-green-700 text-white uppercase text-sm leading-normal">
               <tr>
-                <th className="py-3 px-6 text-left">Position</th>
-                <th className="py-3 px-6 text-left">Team</th>
-                <th className="py-3 px-6 text-center">Played</th>
-                <th className="py-3 px-6 text-center">Won</th>
-                <th className="py-3 px-6 text-center">Drawn</th>
-                <th className="py-3 px-6 text-center">Lost</th>
+                <th className="py-3 px-6 text-left" colSpan={2}>TEAM</th>
+                <th className="py-3 px-6 text-center">MP</th>
+                <th className="py-3 px-6 text-center">W</th>
+                <th className="py-3 px-6 text-center">D</th>
+                <th className="py-3 px-6 text-center">L</th>
                 <th className="py-3 px-6 text-center">GF</th>
                 <th className="py-3 px-6 text-center">GA</th>
                 <th className="py-3 px-6 text-center">GD</th>
-                <th className="py-3 px-6 text-center">Points</th>
+                <th className="py-3 px-6 text-center font-bold">Pts</th>
+                <th className="py-3 px-6 text-center">Last 5</th>
               </tr>
             </thead>
             <tbody className="text-gray-600 text-sm">
@@ -148,8 +175,8 @@ export default function StandingsPage() {
                       className={`border-b border-gray-200 hover:bg-gray-100 cursor-pointer transition-colors ${index < 8 ? 'bg-green-50' : ''} ${selectedTeamId === standing.teamId ? 'bg-green-100' : ''}`}
                       onClick={() => handleTeamClick(standing.teamId)}
                     >
-                      <td className="py-3 px-6 text-left">{index + 1}</td>
-                      <td className="py-3 px-6 text-left font-medium flex items-center">
+                      <td className="py-3 px-2 text-center w-10">{index + 1}</td>
+                      <td className="py-3 px-2 text-left font-medium flex items-center">
                         {standing.teamName}
                         <span className="ml-2 text-green-600">
                           {selectedTeamId === standing.teamId ? 
@@ -170,12 +197,46 @@ export default function StandingsPage() {
                       <td className="py-3 px-6 text-center">{standing.goalsAgainst}</td>
                       <td className="py-3 px-6 text-center">{standing.goalsFor - standing.goalsAgainst}</td>
                       <td className="py-3 px-6 text-center font-bold">{standing.points}</td>
+                      <td className="py-3 px-6 text-center">
+                        <div className="flex justify-center space-x-1">
+                          {getLastFiveMatches(standing.teamId).map((match, idx) => {
+                            const result = getMatchResult(match, standing.teamId);
+                            return (
+                              <div key={idx} className="flex items-center justify-center">
+                                {result === 'win' && (
+                                  <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                    </svg>
+                                  </div>
+                                )}
+                                {result === 'loss' && (
+                                  <div className="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                  </div>
+                                )}
+                                {result === 'draw' && (
+                                  <div className="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
+                                    <div className="h-0.5 w-2 bg-white"></div>
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                          {/* Fill with empty circles if less than 5 matches */}
+                          {Array.from({ length: Math.max(0, 5 - getLastFiveMatches(standing.teamId).length) }).map((_, idx) => (
+                            <div key={`empty-${idx}`} className="w-5 h-5 rounded-full bg-gray-200"></div>
+                          ))}
+                        </div>
+                      </td>
                     </tr>
                     
                     {/* Team Schedule Panel */}
                     {selectedTeamId === standing.teamId && (
                       <tr>
-                        <td colSpan={10} className="p-0">
+                        <td colSpan={11} className="p-0">
                           <div className="bg-gray-50 p-4 border-b border-gray-200 animate-fadeIn">
                             <div className="mb-3 flex justify-between items-center">
                               <h3 className="text-lg font-semibold text-green-800">
@@ -283,7 +344,7 @@ export default function StandingsPage() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={10} className="py-4 px-6 text-center">
+                  <td colSpan={11} className="py-4 px-6 text-center">
                     No standings data available yet. Check back after matches have been played.
                   </td>
                 </tr>
@@ -327,7 +388,7 @@ export default function StandingsPage() {
       <div className="mt-8 bg-gray-50 p-6 rounded-lg border border-gray-200">
         <h2 className="text-xl font-semibold mb-3 text-gray-900">League Information - {selectedSeason}</h2>
         <p className="text-gray-800 text-base mb-4">
-          The standings table shows each team's performance in the {selectedSeason} season, including games played, 
+          The standings table shows each team's performance in the {selectedSeason} season, including matches played, 
           results, goals, and total points. Teams are ranked by total points, with head-to-head results 
           as the first tiebreaker and goal difference as the second tiebreaker.
         </p>
@@ -341,6 +402,19 @@ export default function StandingsPage() {
             </ul>
           </div>
           <div className="bg-white p-4 rounded shadow-sm">
+            <h3 className="font-medium text-green-700 mb-2 text-base">Column Legend</h3>
+            <ul className="space-y-1 text-gray-800 text-base">
+              <li><span className="font-medium">MP</span>: Matches Played</li>
+              <li><span className="font-medium">W</span>: Wins</li>
+              <li><span className="font-medium">D</span>: Draws</li>
+              <li><span className="font-medium">L</span>: Losses</li>
+              <li><span className="font-medium">GF</span>: Goals For</li>
+              <li><span className="font-medium">GA</span>: Goals Against</li>
+              <li><span className="font-medium">GD</span>: Goal Difference</li>
+              <li><span className="font-medium">Pts</span>: Points</li>
+            </ul>
+          </div>
+          <div className="bg-white p-4 rounded shadow-sm">
             <h3 className="font-medium text-green-700 mb-2 text-base">Tiebreakers</h3>
             <ol className="list-decimal pl-5 text-gray-800 text-base">
               <li className="mb-1">Head-to-head results</li>
@@ -348,12 +422,12 @@ export default function StandingsPage() {
               <li className="mb-1">Goals scored</li>
             </ol>
           </div>
-          <div className="bg-white p-4 rounded shadow-sm">
-            <h3 className="font-medium text-green-700 mb-2 text-base">Top Teams</h3>
-            <p className="text-gray-800 text-base">
-              The top 8 teams (highlighted in green) qualify for the championship playoffs at the end of the season.
-            </p>
-          </div>
+        </div>
+        <div className="mt-4 bg-white p-4 rounded shadow-sm">
+          <h3 className="font-medium text-green-700 mb-2 text-base">Top Teams</h3>
+          <p className="text-gray-800 text-base">
+            The top 8 teams (highlighted in green) qualify for the championship playoffs at the end of the season.
+          </p>
         </div>
       </div>
       

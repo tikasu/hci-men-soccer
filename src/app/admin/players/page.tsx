@@ -7,6 +7,7 @@ import { useTeams } from '@/lib/hooks/useTeams';
 import { addPlayerToTeam, updatePlayer, deletePlayer } from '@/lib/services/teamService';
 import { Player } from '@/lib/types';
 import BatchPlayerAdd from './components/BatchPlayerAdd';
+import BatchGoalsUpdate from './components/BatchGoalsUpdate';
 import { useImportPlayersFromTeam } from '@/lib/hooks/usePlayerPool';
 
 export default function AdminPlayersPage() {
@@ -21,6 +22,7 @@ export default function AdminPlayersPage() {
   const [isAddingPlayer, setIsAddingPlayer] = useState(false);
   const [isEditingPlayer, setIsEditingPlayer] = useState<string | null>(null);
   const [isBatchAdding, setIsBatchAdding] = useState(false);
+  const [isBatchUpdatingGoals, setIsBatchUpdatingGoals] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     position: '',
@@ -111,6 +113,7 @@ export default function AdminPlayersPage() {
     setIsAddingPlayer(false);
     setIsEditingPlayer(null);
     setIsBatchAdding(false);
+    setIsBatchUpdatingGoals(false);
     setError('');
     setSuccess('');
   };
@@ -235,6 +238,16 @@ export default function AdminPlayersPage() {
     setPlayers(teamPlayers);
   };
 
+  const handleBatchGoalsUpdateSuccess = async () => {
+    setSuccess('Player goals updated successfully!');
+    resetForm();
+    
+    // Reload players
+    const { getPlayersByTeamId } = await import('@/lib/services/teamService');
+    const teamPlayers = await getPlayersByTeamId(selectedTeam);
+    setPlayers(teamPlayers);
+  };
+
   const handleImportToPool = async () => {
     if (!selectedTeam) {
       setError('Please select a team first');
@@ -318,12 +331,21 @@ export default function AdminPlayersPage() {
         </div>
 
         {selectedTeam && (
-          <div className="flex justify-end space-x-3">
+          <div className="flex flex-wrap justify-end gap-3">
             <button
               onClick={handleImportToPool}
               className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
             >
               Import to Player Pool
+            </button>
+            <button
+              onClick={() => {
+                resetForm();
+                setIsBatchUpdatingGoals(true);
+              }}
+              className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700"
+            >
+              Batch Update Goals
             </button>
             <button
               onClick={() => {
@@ -352,6 +374,15 @@ export default function AdminPlayersPage() {
           teamId={selectedTeam} 
           onSuccess={handleBatchAddSuccess} 
           onCancel={resetForm} 
+        />
+      )}
+
+      {isBatchUpdatingGoals && (
+        <BatchGoalsUpdate
+          players={players}
+          teamId={selectedTeam}
+          onSuccess={handleBatchGoalsUpdateSuccess}
+          onCancel={resetForm}
         />
       )}
 

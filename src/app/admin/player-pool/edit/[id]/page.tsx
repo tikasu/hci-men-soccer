@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { usePoolPlayer, useUpdatePoolPlayer } from '@/lib/hooks/usePlayerPool';
+import { PoolPlayer } from '@/lib/services/playerPoolService';
 import Link from 'next/link';
 
 export default function EditPoolPlayerPage({ params }: { params: Promise<{ id: string }> }) {

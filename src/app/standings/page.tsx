@@ -3,10 +3,12 @@
 import { useState, useEffect } from 'react';
 import { useStandings } from '@/lib/hooks/useMatches';
 import { useMatches } from '@/lib/hooks/useMatches';
+import { usePlayoffMatches } from '@/lib/hooks/usePlayoffMatches';
 import { Standing, Match } from '@/lib/types';
 import Link from 'next/link';
 import React from 'react';
 import { getSettings } from '@/lib/services/settingsService';
+import PlayoffBracket from '@/components/PlayoffBracket';
 
 export default function StandingsPage() {
   const [selectedSeason, setSelectedSeason] = useState<string>('');
@@ -14,6 +16,7 @@ export default function StandingsPage() {
   const [currentSeason, setCurrentSeason] = useState<string>('');
   const { data: standings, isLoading } = useStandings(selectedSeason);
   const { data: allMatches } = useMatches();
+  const { data: playoffMatches, isLoading: isLoadingPlayoffs } = usePlayoffMatches();
   const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
   
   // Load available seasons and current season
@@ -394,6 +397,25 @@ export default function StandingsPage() {
           </div>
         </div>
       )}
+
+      {/* Playoff Bracket Section */}
+      <div className="mt-10 mb-8">
+        <h2 className="text-2xl font-bold mb-6 text-center text-green-800">Playoff Bracket</h2>
+        <div className="bg-white shadow-md rounded-lg overflow-hidden p-4">
+          {isLoadingPlayoffs ? (
+            <div className="flex justify-center items-center h-[30vh]">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-800"></div>
+            </div>
+          ) : playoffMatches && playoffMatches.length > 0 ? (
+            <PlayoffBracket matches={playoffMatches} />
+          ) : (
+            <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative" role="alert">
+              <strong className="font-bold">No playoff matches!</strong>
+              <span className="block sm:inline"> The playoff schedule has not been set yet.</span>
+            </div>
+          )}
+        </div>
+      </div>
 
       <div className="mt-8 bg-gray-50 p-6 rounded-lg border border-gray-200">
         <h2 className="text-xl font-semibold mb-3 text-gray-900">League Information - {selectedSeason}</h2>

@@ -1,12 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTeams, useAllPlayersInLeague } from '@/lib/hooks/useTeams';
 import { Player } from '@/lib/types';
 import Link from 'next/link';
 
-type StatCategory = 'goals' | 'assists';
-type SortField = 'name' | 'team' | 'stats';
+type StatCategory = 'goals' | 'goalsAllowed';
+type SortField = 'name' | 'team' | 'stats' | 'games' | 'average';
 type SortDirection = 'asc' | 'desc';
 
 export default function StatsPage() {
@@ -16,46 +16,121 @@ export default function StatsPage() {
   const [sortField, setSortField] = useState<SortField>('stats');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
+  // Set initial sort field and direction based on active category
+  useEffect(() => {
+    if (activeCategory === 'goalsAllowed') {
+      setSortField('average');
+      setSortDirection('asc');
+    } else {
+      setSortField('stats');
+      setSortDirection('desc');
+    }
+  }, [activeCategory]);
+
+  // Filter players based on active category
+  const filteredPlayers = allPlayers ? allPlayers.filter(player => {
+    if (activeCategory === 'goalsAllowed') {
+      return player.position === 'Goalkeeper';
+    } else {
+      return player.position !== 'Goalkeeper';
+    }
+  }) : [];
+
+  // Set appropriate sort field and direction when changing categories
+  const handleCategoryChange = (category: StatCategory) => {
+    setActiveCategory(category);
+    if (category === 'goalsAllowed') {
+      // For goalkeepers, default to sorting by average (lowest first)
+      setSortField('average');
+      setSortDirection('asc');
+    } else {
+      // For field players, default to sorting by goals (highest first)
+      setSortField('stats');
+      setSortDirection('desc');
+    }
+  };
+
   const handleSort = (field: SortField) => {
     if (field === 'stats') {
-      // For stats field, always set to descending order (most goals at top)
+      // For stats field, set appropriate direction based on category
       setSortField(field);
-      setSortDirection('desc');
+      // For goalsAllowed, lower is better (ascending)
+      setSortDirection(activeCategory === 'goalsAllowed' ? 'asc' : 'desc');
+    } else if (field === 'average' && activeCategory === 'goalsAllowed') {
+      // For average in Golden Glove, lower is better (ascending)
+      setSortField(field);
+      setSortDirection('asc');
     } else if (field === sortField) {
-      // Toggle direction if clicking the same field (except stats)
+      // Toggle direction if clicking the same field
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
       // Set new field and default direction
       setSortField(field);
-      setSortDirection('asc');
+      setSortDirection(field === 'games' ? 'desc' : 'asc');
     }
+  };
+
+  // Calculate average goals allowed per game
+  const getAverageGoalsAllowed = (player: Player): number => {
+    if (!player.stats.gamesPlayed || player.stats.gamesPlayed === 0) return 0;
+    return (player.stats.goalsAllowed || 0) / player.stats.gamesPlayed;
   };
 
   // First, create a ranking map based on the active category
   const getPlayerRankings = () => {
-    if (!allPlayers) return new Map<string, number>();
+    if (!filteredPlayers.length) return new Map<string, number>();
     
     const rankMap = new Map<string, number>();
     
-    // Sort players by the active stat category (descending)
-    const statSortedPlayers = [...allPlayers].sort((a, b) => 
-      b.stats[activeCategory] - a.stats[activeCategory]
-    );
+    // Sort players by the active stat category
+    const statSortedPlayers = [...filteredPlayers].sort((a, b) => {
+      if (activeCategory === 'goalsAllowed') {
+        // For goalkeepers, rank primarily by average goals allowed
+        const aAverage = getAverageGoalsAllowed(a);
+        const bAverage = getAverageGoalsAllowed(b);
+        
+        if (aAverage === bAverage) {
+          // If averages are the same, use total goals allowed as tiebreaker
+          return (a.stats.goalsAllowed || 0) - (b.stats.goalsAllowed || 0);
+        }
+        
+        // Lower average is better
+        return aAverage - bAverage;
+      } else {
+        // For field players, higher goals is better
+        return b.stats[activeCategory] - a.stats[activeCategory];
+      }
+    });
     
     // Assign ranks (handling ties)
     let currentRank = 1;
-    let previousScore = -1;
+    let previousAverage = -1;
+    let previousGoalsAllowed = -1;
     
     statSortedPlayers.forEach((player, index) => {
-      const score = player.stats[activeCategory];
-      
-      // If this score is different from the previous one, update the rank
-      if (score !== previousScore && index > 0) {
-        currentRank = index + 1;
+      if (activeCategory === 'goalsAllowed') {
+        const average = getAverageGoalsAllowed(player);
+        const goalsAllowed = player.stats.goalsAllowed || 0;
+        
+        // If this average is different from the previous one, update the rank
+        if (average !== previousAverage || goalsAllowed !== previousGoalsAllowed) {
+          currentRank = index + 1;
+        }
+        
+        previousAverage = average;
+        previousGoalsAllowed = goalsAllowed;
+      } else {
+        const score = player.stats[activeCategory];
+        
+        // For field players, just consider goals
+        if (score !== previousAverage && index > 0) {
+          currentRank = index + 1;
+        }
+        
+        previousAverage = score;
       }
       
       rankMap.set(player.id, currentRank);
-      previousScore = score;
     });
     
     return rankMap;
@@ -63,11 +138,25 @@ export default function StatsPage() {
 
   const playerRankings = getPlayerRankings();
 
-  // Always sort by the active stat category first, then apply user's sort preference
-  const sortedPlayers = allPlayers ? [...allPlayers].sort((a, b) => {
-    // For stats field, always sort in descending order (most goals at top)
+  // Sort players based on active category and user preferences
+  const sortedPlayers = filteredPlayers.length ? [...filteredPlayers].sort((a, b) => {
+    // For stats field, sort based on the active category
     if (sortField === 'stats') {
-      return b.stats[activeCategory] - a.stats[activeCategory];
+      if (activeCategory === 'goalsAllowed') {
+        // For goalkeepers, sort by average goals allowed (lower is better)
+        return getAverageGoalsAllowed(a) - getAverageGoalsAllowed(b);
+      } else {
+        // For field players, higher goals is better
+        return b.stats[activeCategory] - a.stats[activeCategory];
+      }
+    } else if (sortField === 'games') {
+      // For games played, higher is typically considered better
+      const multiplier = sortDirection === 'asc' ? 1 : -1;
+      return multiplier * ((a.stats.gamesPlayed || 0) - (b.stats.gamesPlayed || 0));
+    } else if (sortField === 'average' && activeCategory === 'goalsAllowed') {
+      // For average goals allowed, lower is better
+      const multiplier = sortDirection === 'asc' ? 1 : -1;
+      return multiplier * (getAverageGoalsAllowed(a) - getAverageGoalsAllowed(b));
     }
     
     // For other fields, respect the sort direction
@@ -88,8 +177,8 @@ export default function StatsPage() {
     switch (category) {
       case 'goals':
         return 'Goals';
-      case 'assists':
-        return 'Assists';
+      case 'goalsAllowed':
+        return 'Golden Glove';
       default:
         return '';
     }
@@ -130,10 +219,10 @@ export default function StatsPage() {
       <div className="mb-6">
         <div className="border-b border-gray-200">
           <nav className="flex flex-wrap -mb-px justify-center">
-            {(['goals', 'assists'] as StatCategory[]).map((category) => (
+            {(['goals', 'goalsAllowed'] as StatCategory[]).map((category) => (
               <button
                 key={category}
-                onClick={() => setActiveCategory(category)}
+                onClick={() => handleCategoryChange(category)}
                 className={`py-3 px-4 sm:py-4 sm:px-6 font-medium text-sm ${
                   activeCategory === category
                     ? 'border-b-2 border-green-700 text-green-700'
@@ -169,14 +258,44 @@ export default function StatsPage() {
                     Team {getSortIcon('team')}
                   </button>
                 </th>
-                <th className="py-2 sm:py-3 px-3 sm:px-6 text-center">
-                  <button 
-                    onClick={() => handleSort('stats')}
-                    className="flex items-center justify-center font-semibold focus:outline-none mx-auto"
-                  >
-                    {getCategoryLabel(activeCategory)} {getSortIcon('stats')}
-                  </button>
-                </th>
+                {activeCategory === 'goalsAllowed' && (
+                  <>
+                    <th className="py-2 sm:py-3 px-3 sm:px-6 text-center">
+                      <button 
+                        onClick={() => handleSort('games')}
+                        className="flex items-center justify-center font-semibold focus:outline-none mx-auto"
+                      >
+                        Games {getSortIcon('games')}
+                      </button>
+                    </th>
+                    <th className="py-2 sm:py-3 px-3 sm:px-6 text-center">
+                      <button 
+                        onClick={() => handleSort('stats')}
+                        className="flex items-center justify-center font-semibold focus:outline-none mx-auto"
+                      >
+                        Goals Allowed {getSortIcon('stats')}
+                      </button>
+                    </th>
+                    <th className="py-2 sm:py-3 px-3 sm:px-6 text-center">
+                      <button 
+                        onClick={() => handleSort('average')}
+                        className="flex items-center justify-center font-semibold focus:outline-none mx-auto"
+                      >
+                        Average (GA/Game) {getSortIcon('average')}
+                      </button>
+                    </th>
+                  </>
+                )}
+                {activeCategory === 'goals' && (
+                  <th className="py-2 sm:py-3 px-3 sm:px-6 text-center">
+                    <button 
+                      onClick={() => handleSort('stats')}
+                      className="flex items-center justify-center font-semibold focus:outline-none mx-auto"
+                    >
+                      Goals {getSortIcon('stats')}
+                    </button>
+                  </th>
+                )}
               </tr>
             </thead>
             <tbody className="text-gray-600 text-xs sm:text-sm">
@@ -184,6 +303,10 @@ export default function StatsPage() {
                 sortedPlayers.map((player) => {
                   const team = teams?.find(t => t.id === player.teamId);
                   const playerRank = playerRankings.get(player.id) || 0;
+                  const statValue = activeCategory === 'goalsAllowed' 
+                    ? (player.stats.goalsAllowed || 0) 
+                    : player.stats[activeCategory];
+                  const averageValue = getAverageGoalsAllowed(player);
                   
                   return (
                     <tr key={player.id} className="border-b border-gray-200 hover:bg-gray-50">
@@ -194,14 +317,25 @@ export default function StatsPage() {
                           {team?.name || 'Unknown Team'}
                         </Link>
                       </td>
-                      <td className="py-2 sm:py-3 px-3 sm:px-6 text-center font-bold">{player.stats[activeCategory]}</td>
+                      {activeCategory === 'goalsAllowed' && (
+                        <>
+                          <td className="py-2 sm:py-3 px-3 sm:px-6 text-center">{player.stats.gamesPlayed || 0}</td>
+                          <td className="py-2 sm:py-3 px-3 sm:px-6 text-center font-bold">{statValue}</td>
+                          <td className="py-2 sm:py-3 px-3 sm:px-6 text-center">{averageValue.toFixed(2)}</td>
+                        </>
+                      )}
+                      {activeCategory === 'goals' && (
+                        <td className="py-2 sm:py-3 px-3 sm:px-6 text-center font-bold">{statValue}</td>
+                      )}
                     </tr>
                   );
                 })
               ) : (
                 <tr>
-                  <td colSpan={4} className="py-6 text-center text-gray-500">
-                    No player statistics available
+                  <td colSpan={activeCategory === 'goalsAllowed' ? 6 : 4} className="py-6 text-center text-gray-500">
+                    {activeCategory === 'goalsAllowed' 
+                      ? 'No goalkeeper statistics available' 
+                      : 'No player statistics available'}
                   </td>
                 </tr>
               )}
@@ -209,6 +343,12 @@ export default function StatsPage() {
           </table>
         </div>
       </div>
+      
+      {activeCategory === 'goalsAllowed' && (
+        <div className="mt-4 text-sm text-gray-600 bg-gray-100 p-3 rounded-md">
+          <p><strong>Note:</strong> The Golden Glove ranking is based on average goals allowed per game (GA/Game). Lower averages are better. In case of a tie in average, total goals allowed is used as a tiebreaker.</p>
+        </div>
+      )}
     </div>
   );
 } 

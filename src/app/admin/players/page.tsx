@@ -32,7 +32,8 @@ export default function AdminPlayersPage() {
       assists: 0,
       yellowCards: 0,
       redCards: 0,
-      gamesPlayed: 0
+      gamesPlayed: 0,
+      goalsAllowed: 0
     }
   });
   const [error, setError] = useState('');
@@ -107,7 +108,8 @@ export default function AdminPlayersPage() {
         assists: 0,
         yellowCards: 0,
         redCards: 0,
-        gamesPlayed: 0
+        gamesPlayed: 0,
+        goalsAllowed: 0
       }
     });
     setIsAddingPlayer(false);
@@ -221,7 +223,8 @@ export default function AdminPlayersPage() {
         assists: player.stats.assists || 0,
         yellowCards: player.stats.yellowCards || 0,
         redCards: player.stats.redCards || 0,
-        gamesPlayed: player.stats.gamesPlayed || 0
+        gamesPlayed: player.stats.gamesPlayed || 0,
+        goalsAllowed: player.stats.goalsAllowed || 0
       }
     });
     setIsEditingPlayer(player.id);
@@ -481,6 +484,22 @@ export default function AdminPlayersPage() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
                 />
               </div>
+              {formData.position === 'Goalkeeper' && (
+                <div>
+                  <label htmlFor="stats.goalsAllowed" className="block text-base font-medium text-gray-900 mb-1">
+                    Goals Allowed
+                  </label>
+                  <input
+                    type="number"
+                    id="stats.goalsAllowed"
+                    name="stats.goalsAllowed"
+                    value={formData.stats.goalsAllowed || 0}
+                    onChange={handleInputChange}
+                    min="0"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                  />
+                </div>
+              )}
               <div>
                 <label htmlFor="stats.yellowCards" className="block text-base font-medium text-gray-900 mb-1">
                   Yellow Cards

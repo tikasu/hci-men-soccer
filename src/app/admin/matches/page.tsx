@@ -284,6 +284,8 @@ export default function AdminMatchesPage() {
             }
           }
         }
+        
+        // Note: Goalkeeper stats (goals allowed) are now managed separately through the goalkeeper stats page
       }
       
       // Wait for all updates to complete
@@ -396,6 +398,8 @@ export default function AdminMatchesPage() {
             }
           }
         }
+        
+        // Note: Goalkeeper stats (goals allowed) are now managed separately through the goalkeeper stats page
       }
       
       // Wait for all updates to complete

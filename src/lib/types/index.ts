@@ -13,6 +13,7 @@ export interface PlayerStats {
   yellowCards: number;
   redCards: number;
   gamesPlayed: number;
+  goalsAllowed?: number; // For goalkeepers only
 }
 
 export interface Team {

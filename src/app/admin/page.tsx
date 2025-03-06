@@ -61,13 +61,13 @@ export default function AdminPage() {
         {/* League Goals Update */}
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
           <div className="p-6">
-            <h2 className="text-xl font-semibold mb-4 text-gray-900">League Goals Update</h2>
-            <p className="text-gray-700 mb-4 text-base">Batch update player goals across the entire league.</p>
+            <h2 className="text-xl font-semibold mb-4 text-gray-900">Player Stats Update</h2>
+            <p className="text-gray-700 mb-4 text-base">Batch update player goals and goalkeeper stats across the entire league.</p>
             <Link 
               href="/admin/league-goals" 
               className="inline-block bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800 text-base"
             >
-              Update Goals
+              Update Stats
             </Link>
           </div>
         </div>

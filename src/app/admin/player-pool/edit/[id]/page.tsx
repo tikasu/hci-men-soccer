@@ -13,17 +13,19 @@ export default function EditPoolPlayerPage({ params }: { params: Promise<{ id: s
   const { data: player, isLoading: isLoadingPlayer } = usePoolPlayer(playerId);
   const updatePlayerMutation = useUpdatePoolPlayer();
   
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<PoolPlayer>({
+    id: '',
     name: '',
     position: '',
-    number: '',
     stats: {
       goals: 0,
       assists: 0,
       yellowCards: 0,
       redCards: 0,
-      gamesPlayed: 0
-    }
+      gamesPlayed: 0,
+      goalsAllowed: 0
+    },
+    isActive: true
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -52,16 +54,18 @@ export default function EditPoolPlayerPage({ params }: { params: Promise<{ id: s
   useEffect(() => {
     if (player) {
       setFormData({
+        id: player.id,
         name: player.name || '',
         position: player.position || 'Fieldplayer',
-        number: player.number || '',
         stats: {
           goals: player.stats?.goals || 0,
           assists: player.stats?.assists || 0,
           yellowCards: player.stats?.yellowCards || 0,
           redCards: player.stats?.redCards || 0,
-          gamesPlayed: player.stats?.gamesPlayed || 0
-        }
+          gamesPlayed: player.stats?.gamesPlayed || 0,
+          goalsAllowed: player.stats?.goalsAllowed || 0
+        },
+        isActive: player.isActive
       });
     }
   }, [player]);
@@ -130,7 +134,6 @@ export default function EditPoolPlayerPage({ params }: { params: Promise<{ id: s
         player: {
           name: formData.name,
           position: formData.position,
-          number: formData.number,
           stats: formData.stats
         }
       });
@@ -221,7 +224,7 @@ export default function EditPoolPlayerPage({ params }: { params: Promise<{ id: s
           </div>
           
           <h3 className="text-lg font-medium text-gray-900 mb-3">Player Statistics</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div>
               <label htmlFor="stats.goals" className="block text-sm font-medium text-gray-700 mb-1">
                 Goals
@@ -253,6 +256,38 @@ export default function EditPoolPlayerPage({ params }: { params: Promise<{ id: s
             </div>
             
             <div>
+              <label htmlFor="stats.gamesPlayed" className="block text-sm font-medium text-gray-700 mb-1">
+                Games Played
+              </label>
+              <input
+                type="number"
+                id="stats.gamesPlayed"
+                name="stats.gamesPlayed"
+                value={formData.stats.gamesPlayed}
+                onChange={handleChange}
+                min="0"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+              />
+            </div>
+            
+            {formData.position === 'Goalkeeper' && (
+              <div>
+                <label htmlFor="stats.goalsAllowed" className="block text-sm font-medium text-gray-700 mb-1">
+                  Goals Allowed
+                </label>
+                <input
+                  type="number"
+                  id="stats.goalsAllowed"
+                  name="stats.goalsAllowed"
+                  value={formData.stats.goalsAllowed || 0}
+                  onChange={handleChange}
+                  min="0"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                />
+              </div>
+            )}
+            
+            <div>
               <label htmlFor="stats.yellowCards" className="block text-sm font-medium text-gray-700 mb-1">
                 Yellow Cards
               </label>
@@ -276,21 +311,6 @@ export default function EditPoolPlayerPage({ params }: { params: Promise<{ id: s
                 id="stats.redCards"
                 name="stats.redCards"
                 value={formData.stats.redCards}
-                onChange={handleChange}
-                min="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
-              />
-            </div>
-            
-            <div>
-              <label htmlFor="stats.gamesPlayed" className="block text-sm font-medium text-gray-700 mb-1">
-                Games Played
-              </label>
-              <input
-                type="number"
-                id="stats.gamesPlayed"
-                name="stats.gamesPlayed"
-                value={formData.stats.gamesPlayed}
                 onChange={handleChange}
                 min="0"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"

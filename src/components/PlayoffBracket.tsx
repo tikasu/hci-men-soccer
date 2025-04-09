@@ -29,12 +29,13 @@ const PlayoffBracket: React.FC<PlayoffBracketProps> = ({ matches }) => {
   };
 
   const renderMatchCard = (match: PlayoffMatch) => {
-    const homeWinner = match.isCompleted && match.homeScore !== undefined && match.homeScore !== null && 
-                      match.awayScore !== undefined && match.awayScore !== null && 
-                      match.homeScore > match.awayScore;
-    const awayWinner = match.isCompleted && match.homeScore !== undefined && match.homeScore !== null && 
-                      match.awayScore !== undefined && match.awayScore !== null && 
-                      match.awayScore > match.homeScore;
+    const isTied = match.isCompleted && match.homeScore === match.awayScore;
+    const homeWinner = match.isCompleted && 
+      ((match.homeScore !== undefined && match.awayScore !== undefined && match.homeScore > match.awayScore) ||
+       (isTied && match.homePenalties !== undefined && match.awayPenalties !== undefined && match.homePenalties > match.awayPenalties));
+    const awayWinner = match.isCompleted && 
+      ((match.homeScore !== undefined && match.awayScore !== undefined && match.awayScore > match.homeScore) ||
+       (isTied && match.homePenalties !== undefined && match.awayPenalties !== undefined && match.awayPenalties > match.homePenalties));
     
     return (
       <div className="bg-white shadow-md rounded-lg overflow-hidden border-l-4 border-green-500 w-full">
@@ -43,49 +44,65 @@ const PlayoffBracket: React.FC<PlayoffBracketProps> = ({ matches }) => {
             {match.date ? formatDate(match.date) : 'Date TBD'} {match.location ? `• ${match.location}` : ''}
           </div>
           
-          <div className="flex flex-col">
-            <div className={`flex justify-between items-center py-1 px-2 rounded ${homeWinner ? 'bg-green-100' : ''}`}>
-              <div className="font-medium truncate mr-2">
-                {match.homeTeamId ? (
-                  <Link href={`/teams/${match.homeTeamId}`} className="hover:text-green-700">
-                    {match.homeTeamName}
-                  </Link>
-                ) : (
-                  <span className="text-gray-500">{match.homeTeamName}</span>
-                )}
-              </div>
-              <div className={`font-bold ${
-                match.isCompleted && match.homeScore !== undefined && match.homeScore !== null && match.awayScore !== undefined && match.awayScore !== null
-                  ? match.homeScore > match.awayScore
-                    ? 'text-green-600'
-                    : match.homeScore < match.awayScore
-                      ? 'text-red-600'
-                      : 'text-gray-800'
-                  : ''
-              }`}>{match.homeScore !== undefined && match.homeScore !== null ? match.homeScore : '-'}</div>
+          <div className={`flex justify-between items-center py-1 px-2 rounded ${homeWinner ? 'bg-green-100' : ''}`}>
+            <div className="font-medium truncate mr-2">
+              {match.homeTeamId ? (
+                <Link href={`/teams/${match.homeTeamId}`} className="hover:text-green-700">
+                  {match.homeTeamName}
+                </Link>
+              ) : (
+                <span className="text-gray-500">{match.homeTeamName}</span>
+              )}
             </div>
-            
-            <div className={`flex justify-between items-center py-1 px-2 rounded ${awayWinner ? 'bg-green-100' : ''}`}>
-              <div className="font-medium truncate mr-2">
-                {match.awayTeamId ? (
-                  <Link href={`/teams/${match.awayTeamId}`} className="hover:text-green-700">
-                    {match.awayTeamName}
-                  </Link>
-                ) : (
-                  <span className="text-gray-500">{match.awayTeamName}</span>
-                )}
-              </div>
+            <div className="flex items-center">
               <div className={`font-bold ${
                 match.isCompleted && match.homeScore !== undefined && match.homeScore !== null && match.awayScore !== undefined && match.awayScore !== null
-                  ? match.awayScore > match.homeScore
+                  ? homeWinner
                     ? 'text-green-600'
-                    : match.awayScore < match.homeScore
+                    : awayWinner
                       ? 'text-red-600'
                       : 'text-gray-800'
                   : ''
-              }`}>{match.awayScore !== undefined && match.awayScore !== null ? match.awayScore : '-'}</div>
+              }`}>
+                {match.homeScore !== undefined && match.homeScore !== null ? match.homeScore : '-'}
+                {isTied && match.homePenalties !== undefined && match.homePenalties !== null && 
+                 <span className="text-sm ml-1">({match.homePenalties})</span>}
+              </div>
             </div>
           </div>
+          
+          <div className={`flex justify-between items-center py-1 px-2 rounded ${awayWinner ? 'bg-green-100' : ''}`}>
+            <div className="font-medium truncate mr-2">
+              {match.awayTeamId ? (
+                <Link href={`/teams/${match.awayTeamId}`} className="hover:text-green-700">
+                  {match.awayTeamName}
+                </Link>
+              ) : (
+                <span className="text-gray-500">{match.awayTeamName}</span>
+              )}
+            </div>
+            <div className="flex items-center">
+              <div className={`font-bold ${
+                match.isCompleted && match.homeScore !== undefined && match.homeScore !== null && match.awayScore !== undefined && match.awayScore !== null
+                  ? awayWinner
+                    ? 'text-green-600'
+                    : homeWinner
+                      ? 'text-red-600'
+                      : 'text-gray-800'
+                  : ''
+              }`}>
+                {match.awayScore !== undefined && match.awayScore !== null ? match.awayScore : '-'}
+                {isTied && match.awayPenalties !== undefined && match.awayPenalties !== null && 
+                 <span className="text-sm ml-1">({match.awayPenalties})</span>}
+              </div>
+            </div>
+          </div>
+          
+          {isTied && match.homePenalties !== undefined && match.awayPenalties !== undefined && (
+            <div className="text-xs text-gray-500 mt-1 text-center">
+              Decided by penalties
+            </div>
+          )}
         </div>
       </div>
     );

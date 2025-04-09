@@ -41,6 +41,8 @@ export default function PlayoffManagementPage() {
     awayTeamId: '',
     homeScore: '',
     awayScore: '',
+    homePenalties: '',
+    awayPenalties: '',
     isCompleted: false
   });
   const [showIndexHelper, setShowIndexHelper] = useState(false);
@@ -82,6 +84,8 @@ export default function PlayoffManagementPage() {
         awayTeamId: editingMatch.awayTeamId || '',
         homeScore: editingMatch.homeScore !== undefined ? String(editingMatch.homeScore) : '',
         awayScore: editingMatch.awayScore !== undefined ? String(editingMatch.awayScore) : '',
+        homePenalties: editingMatch.homePenalties !== undefined ? String(editingMatch.homePenalties) : '',
+        awayPenalties: editingMatch.awayPenalties !== undefined ? String(editingMatch.awayPenalties) : '',
         isCompleted: editingMatch.isCompleted || false
       });
     }
@@ -134,6 +138,8 @@ export default function PlayoffManagementPage() {
       awayTeamName: awayTeam?.name || 'TBD',
       homeScore: formData.isCompleted && formData.homeScore !== '' ? parseInt(formData.homeScore) : undefined,
       awayScore: formData.isCompleted && formData.awayScore !== '' ? parseInt(formData.awayScore) : undefined,
+      homePenalties: formData.isCompleted && formData.homePenalties !== '' ? parseInt(formData.homePenalties) : undefined,
+      awayPenalties: formData.isCompleted && formData.awayPenalties !== '' ? parseInt(formData.awayPenalties) : undefined,
       isCompleted: formData.isCompleted
     };
     
@@ -149,15 +155,27 @@ export default function PlayoffManagementPage() {
         
         const homeScore = parseInt(formData.homeScore || '0');
         const awayScore = parseInt(formData.awayScore || '0');
-        const winnerId = homeScore > awayScore ? formData.homeTeamId : formData.awayTeamId;
-        const winnerName = homeScore > awayScore ? homeTeam?.name || 'TBD' : awayTeam?.name || 'TBD';
+        const homePenalties = parseInt(formData.homePenalties || '0');
+        const awayPenalties = parseInt(formData.awayPenalties || '0');
         
-        await updateNextRoundMatch({
-          currentRound: editingMatch.round as 'quarterfinal' | 'semifinal',
-          currentMatchNumber: editingMatch.matchNumber,
-          winnerId,
-          winnerName
-        });
+        // Determine winner based on score and penalties if needed
+        let winnerId, winnerName;
+        if (homeScore !== awayScore) {
+          winnerId = homeScore > awayScore ? formData.homeTeamId : formData.awayTeamId;
+          winnerName = homeScore > awayScore ? homeTeam?.name || 'TBD' : awayTeam?.name || 'TBD';
+        } else if (homePenalties !== awayPenalties) {
+          winnerId = homePenalties > awayPenalties ? formData.homeTeamId : formData.awayTeamId;
+          winnerName = homePenalties > awayPenalties ? homeTeam?.name || 'TBD' : awayTeam?.name || 'TBD';
+        }
+        
+        if (winnerId && winnerName) {
+          await updateNextRoundMatch({
+            currentRound: editingMatch.round as 'quarterfinal' | 'semifinal',
+            currentMatchNumber: editingMatch.matchNumber,
+            winnerId,
+            winnerName
+          });
+        }
       }
       
       setEditingMatch(null);
@@ -494,6 +512,42 @@ export default function PlayoffManagementPage() {
                   />
                 </div>
               </div>
+
+              {/* Add Penalty Shootout Section - Only show if scores are tied */}
+              {formData.homeScore === formData.awayScore && formData.homeScore !== '' && formData.awayScore !== '' && (
+                <div className="mt-4">
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">Penalty Shootout</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Home Team Penalties
+                      </label>
+                      <input
+                        type="number"
+                        name="homePenalties"
+                        value={formData.homePenalties}
+                        onChange={handleInputChange}
+                        className="w-full p-2 border border-gray-300 rounded-md"
+                        min="0"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Away Team Penalties
+                      </label>
+                      <input
+                        type="number"
+                        name="awayPenalties"
+                        value={formData.awayPenalties}
+                        onChange={handleInputChange}
+                        className="w-full p-2 border border-gray-300 rounded-md"
+                        min="0"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
               
               <div className="mb-6">
                 <label className="flex items-center">

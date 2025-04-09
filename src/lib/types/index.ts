@@ -93,6 +93,8 @@ export interface PlayoffMatch {
   awayTeamName: string;
   homeScore?: number;
   awayScore?: number;
+  homePenalties?: number;  // Number of penalties scored by home team
+  awayPenalties?: number;  // Number of penalties scored by away team
   location: string;
   isCompleted: boolean;
   round: 'quarterfinal' | 'semifinal' | 'final';
